@@ -1,0 +1,5 @@
+tensorflow[and-cuda]==2.18
+phmd==2015.0.1
+ray[train]==2.10.0
+einops==0.8.1
+statsmodels==0.14.1

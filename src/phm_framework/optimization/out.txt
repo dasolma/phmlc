@@ -1,0 +1,1948 @@
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 64, 'block_size': 1}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0169 - rmse: 0.1298 - mae: 0.0538 - val_loss: 0.0109 - val_rmse: 0.1046 - val_mae: 0.0504 - lr: 0.0010 - 3s/epoch - 33ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0993 - mae: 0.0418 - val_loss: 0.0088 - val_rmse: 0.0940 - val_mae: 0.0439 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.1002 - mae: 0.0382 - val_loss: 0.0143 - val_rmse: 0.1197 - val_mae: 0.0535 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0987 - mae: 0.0384 - val_loss: 0.0104 - val_rmse: 0.1021 - val_mae: 0.0455 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0114 - rmse: 0.1069 - mae: 0.0404 - val_loss: 0.0087 - val_rmse: 0.0931 - val_mae: 0.0406 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1038 - mae: 0.0394 - val_loss: 0.0115 - val_rmse: 0.1074 - val_mae: 0.0467 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0077 - rmse: 0.0879 - mae: 0.0336 - val_loss: 0.0110 - val_rmse: 0.1048 - val_mae: 0.0469 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0982 - mae: 0.0374 - val_loss: 0.0072 - val_rmse: 0.0848 - val_mae: 0.0382 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0091 - rmse: 0.0955 - mae: 0.0364 - val_loss: 0.0091 - val_rmse: 0.0954 - val_mae: 0.0412 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0985 - mae: 0.0376 - val_loss: 0.0080 - val_rmse: 0.0896 - val_mae: 0.0372 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0106 - rmse: 0.1029 - mae: 0.0385 - val_loss: 0.0095 - val_rmse: 0.0972 - val_mae: 0.0408 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0991 - mae: 0.0365 - val_loss: 0.0107 - val_rmse: 0.1032 - val_mae: 0.0439 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0078 - rmse: 0.0883 - mae: 0.0327 - val_loss: 0.0122 - val_rmse: 0.1106 - val_mae: 0.0451 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0062 - rmse: 0.0785 - mae: 0.0327 - val_loss: 0.0095 - val_rmse: 0.0976 - val_mae: 0.0408 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1014 - mae: 0.0380 - val_loss: 0.0098 - val_rmse: 0.0989 - val_mae: 0.0413 - lr: 1.0000e-05 - 2s/epoch - 17ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0991 - mae: 0.0373 - val_loss: 0.0103 - val_rmse: 0.1015 - val_mae: 0.0430 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0213 - rmse: 0.1460 - mae: 0.0711 - 11s/epoch - 11ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 20 0.7503591658388825
+4 30 0.7536105083895304
+4 40 0.7871644365195541
+6 40 0.790762449774936
+7 40 0.7931200601215902
+7 60 0.7948866966019994
+0.5725070189595268 0.914221640814801
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 64, 'block_size': 2}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0146 - rmse: 0.1207 - mae: 0.0518 - val_loss: 0.0107 - val_rmse: 0.1032 - val_mae: 0.0510 - lr: 0.0010 - 3s/epoch - 35ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0997 - mae: 0.0427 - val_loss: 0.0096 - val_rmse: 0.0980 - val_mae: 0.0481 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0090 - rmse: 0.0950 - mae: 0.0375 - val_loss: 0.0134 - val_rmse: 0.1159 - val_mae: 0.0543 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0087 - rmse: 0.0934 - mae: 0.0368 - val_loss: 0.0096 - val_rmse: 0.0981 - val_mae: 0.0448 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0072 - rmse: 0.0850 - mae: 0.0356 - val_loss: 0.0073 - val_rmse: 0.0854 - val_mae: 0.0390 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0913 - mae: 0.0342 - val_loss: 0.0110 - val_rmse: 0.1051 - val_mae: 0.0458 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0073 - rmse: 0.0855 - mae: 0.0315 - val_loss: 0.0104 - val_rmse: 0.1019 - val_mae: 0.0453 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0993 - mae: 0.0365 - val_loss: 0.0072 - val_rmse: 0.0850 - val_mae: 0.0383 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0107 - rmse: 0.1034 - mae: 0.0365 - val_loss: 0.0090 - val_rmse: 0.0948 - val_mae: 0.0410 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0084 - rmse: 0.0916 - mae: 0.0347 - val_loss: 0.0084 - val_rmse: 0.0916 - val_mae: 0.0396 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1038 - mae: 0.0370 - val_loss: 0.0096 - val_rmse: 0.0978 - val_mae: 0.0413 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0085 - rmse: 0.0924 - mae: 0.0353 - val_loss: 0.0104 - val_rmse: 0.1019 - val_mae: 0.0459 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0090 - rmse: 0.0946 - mae: 0.0333 - val_loss: 0.0112 - val_rmse: 0.1060 - val_mae: 0.0462 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0060 - rmse: 0.0772 - mae: 0.0315 - val_loss: 0.0092 - val_rmse: 0.0958 - val_mae: 0.0416 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0105 - rmse: 0.1025 - mae: 0.0378 - val_loss: 0.0098 - val_rmse: 0.0990 - val_mae: 0.0422 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0908 - mae: 0.0351 - val_loss: 0.0101 - val_rmse: 0.1004 - val_mae: 0.0443 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0198 - rmse: 0.1408 - mae: 0.0701 - 11s/epoch - 11ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 40 0.7508359611819639
+3 50 0.754473158651713
+3 60 0.7657409064918229
+4 60 0.7697319063240781
+5 50 0.780792244027863
+5 60 0.7819545428117978
+6 60 0.7908591207422404
+0.5469686764343019 0.9203887123902075
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0101 - rmse: 0.1006 - mae: 0.0480 - val_loss: 0.0112 - val_rmse: 0.1058 - val_mae: 0.0490 - lr: 0.0010 - 4s/epoch - 37ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0958 - mae: 0.0429 - val_loss: 0.0113 - val_rmse: 0.1065 - val_mae: 0.0501 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0076 - rmse: 0.0870 - mae: 0.0395 - val_loss: 0.0117 - val_rmse: 0.1081 - val_mae: 0.0482 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0119 - rmse: 0.1089 - mae: 0.0457 - val_loss: 0.0098 - val_rmse: 0.0988 - val_mae: 0.0422 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0089 - rmse: 0.0944 - mae: 0.0385 - val_loss: 0.0114 - val_rmse: 0.1066 - val_mae: 0.0447 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0067 - rmse: 0.0820 - mae: 0.0357 - val_loss: 0.0101 - val_rmse: 0.1007 - val_mae: 0.0435 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0089 - rmse: 0.0944 - mae: 0.0368 - val_loss: 0.0109 - val_rmse: 0.1046 - val_mae: 0.0444 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0979 - mae: 0.0378 - val_loss: 0.0118 - val_rmse: 0.1086 - val_mae: 0.0451 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0909 - mae: 0.0365 - val_loss: 0.0106 - val_rmse: 0.1029 - val_mae: 0.0419 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0068 - rmse: 0.0823 - mae: 0.0348 - val_loss: 0.0113 - val_rmse: 0.1064 - val_mae: 0.0441 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0069 - rmse: 0.0830 - mae: 0.0325 - val_loss: 0.0100 - val_rmse: 0.0998 - val_mae: 0.0416 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0972 - mae: 0.0369 - val_loss: 0.0083 - val_rmse: 0.0911 - val_mae: 0.0384 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0062 - rmse: 0.0789 - mae: 0.0328 - val_loss: 0.0098 - val_rmse: 0.0991 - val_mae: 0.0411 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0068 - rmse: 0.0825 - mae: 0.0332 - val_loss: 0.0109 - val_rmse: 0.1045 - val_mae: 0.0439 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0066 - rmse: 0.0810 - mae: 0.0356 - val_loss: 0.0089 - val_rmse: 0.0944 - val_mae: 0.0405 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0087 - rmse: 0.0934 - mae: 0.0381 - val_loss: 0.0133 - val_rmse: 0.1154 - val_mae: 0.0480 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 17/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0913 - mae: 0.0390 - val_loss: 0.0105 - val_rmse: 0.1026 - val_mae: 0.0420 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 18/100
+100/100 - 2s - loss: 0.0064 - rmse: 0.0797 - mae: 0.0329 - val_loss: 0.0130 - val_rmse: 0.1142 - val_mae: 0.0464 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 19/100
+100/100 - 2s - loss: 0.0080 - rmse: 0.0893 - mae: 0.0365 - val_loss: 0.0096 - val_rmse: 0.0982 - val_mae: 0.0405 - lr: 1.0000e-07 - 2s/epoch - 18ms/step
+Epoch 20/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0996 - mae: 0.0433 - val_loss: 0.0108 - val_rmse: 0.1038 - val_mae: 0.0420 - lr: 1.0000e-07 - 2s/epoch - 18ms/step
+1000/1000 - 12s - loss: 0.0209 - rmse: 0.1447 - mae: 0.0700 - 12s/epoch - 12ms/step
+2 10 0.7818592106073007
+3 20 0.7956195132790178
+3 30 0.8077252715836052
+3 40 0.8095711668786114
+0.9065554785526699 0.7544194935499283
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0144 - rmse: 0.1199 - mae: 0.0599 - val_loss: 0.0115 - val_rmse: 0.1074 - val_mae: 0.0430 - lr: 0.0010 - 4s/epoch - 37ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0928 - mae: 0.0427 - val_loss: 0.0124 - val_rmse: 0.1112 - val_mae: 0.0406 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0109 - rmse: 0.1043 - mae: 0.0458 - val_loss: 0.0117 - val_rmse: 0.1080 - val_mae: 0.0396 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1011 - mae: 0.0437 - val_loss: 0.0100 - val_rmse: 0.0998 - val_mae: 0.0357 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0914 - mae: 0.0402 - val_loss: 0.0115 - val_rmse: 0.1073 - val_mae: 0.0383 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0958 - mae: 0.0419 - val_loss: 0.0111 - val_rmse: 0.1052 - val_mae: 0.0382 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0088 - rmse: 0.0939 - mae: 0.0392 - val_loss: 0.0101 - val_rmse: 0.1007 - val_mae: 0.0359 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0075 - rmse: 0.0866 - mae: 0.0375 - val_loss: 0.0088 - val_rmse: 0.0939 - val_mae: 0.0343 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1007 - mae: 0.0444 - val_loss: 0.0091 - val_rmse: 0.0953 - val_mae: 0.0336 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0105 - rmse: 0.1024 - mae: 0.0409 - val_loss: 0.0094 - val_rmse: 0.0969 - val_mae: 0.0339 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0929 - mae: 0.0375 - val_loss: 0.0095 - val_rmse: 0.0973 - val_mae: 0.0340 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0127 - rmse: 0.1129 - mae: 0.0451 - val_loss: 0.0102 - val_rmse: 0.1009 - val_mae: 0.0356 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0056 - rmse: 0.0746 - mae: 0.0327 - val_loss: 0.0096 - val_rmse: 0.0978 - val_mae: 0.0339 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0080 - rmse: 0.0893 - mae: 0.0383 - val_loss: 0.0097 - val_rmse: 0.0987 - val_mae: 0.0338 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0107 - rmse: 0.1036 - mae: 0.0439 - val_loss: 0.0087 - val_rmse: 0.0931 - val_mae: 0.0326 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0055 - rmse: 0.0741 - mae: 0.0324 - val_loss: 0.0105 - val_rmse: 0.1024 - val_mae: 0.0381 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 17/100
+100/100 - 2s - loss: 0.0085 - rmse: 0.0920 - mae: 0.0387 - val_loss: 0.0093 - val_rmse: 0.0967 - val_mae: 0.0350 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 18/100
+100/100 - 2s - loss: 0.0076 - rmse: 0.0872 - mae: 0.0383 - val_loss: 0.0083 - val_rmse: 0.0909 - val_mae: 0.0323 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 19/100
+100/100 - 2s - loss: 0.0084 - rmse: 0.0916 - mae: 0.0412 - val_loss: 0.0101 - val_rmse: 0.1005 - val_mae: 0.0357 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 20/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0977 - mae: 0.0425 - val_loss: 0.0097 - val_rmse: 0.0982 - val_mae: 0.0346 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 21/100
+100/100 - 2s - loss: 0.0129 - rmse: 0.1137 - mae: 0.0462 - val_loss: 0.0108 - val_rmse: 0.1039 - val_mae: 0.0353 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 22/100
+100/100 - 2s - loss: 0.0091 - rmse: 0.0953 - mae: 0.0397 - val_loss: 0.0083 - val_rmse: 0.0913 - val_mae: 0.0322 - lr: 1.0000e-07 - 2s/epoch - 18ms/step
+Epoch 23/100
+100/100 - 2s - loss: 0.0121 - rmse: 0.1099 - mae: 0.0474 - val_loss: 0.0095 - val_rmse: 0.0973 - val_mae: 0.0330 - lr: 1.0000e-07 - 2s/epoch - 18ms/step
+Epoch 24/100
+100/100 - 2s - loss: 0.0106 - rmse: 0.1027 - mae: 0.0431 - val_loss: 0.0085 - val_rmse: 0.0920 - val_mae: 0.0336 - lr: 1.0000e-07 - 2s/epoch - 18ms/step
+Epoch 25/100
+100/100 - 2s - loss: 0.0136 - rmse: 0.1165 - mae: 0.0503 - val_loss: 0.0111 - val_rmse: 0.1055 - val_mae: 0.0368 - lr: 1.0000e-08 - 2s/epoch - 19ms/step
+Epoch 26/100
+100/100 - 2s - loss: 0.0085 - rmse: 0.0923 - mae: 0.0374 - val_loss: 0.0114 - val_rmse: 0.1068 - val_mae: 0.0375 - lr: 1.0000e-08 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0223 - rmse: 0.1492 - mae: 0.0711 - 11s/epoch - 11ms/step
+2 10 0.7201403044205952
+2 20 0.7272209477989993
+2 30 0.7506215337095267
+2 40 0.7515227258832083
+2 50 0.7580037780890934
+3 40 0.7596656225800972
+3 50 0.761034066840634
+4 40 0.7699168388143007
+0.6191575740173558 0.846634824142423
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 64, 'block_size': 3}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0145 - rmse: 0.1204 - mae: 0.0529 - val_loss: 0.0121 - val_rmse: 0.1099 - val_mae: 0.0548 - lr: 0.0010 - 4s/epoch - 39ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1016 - mae: 0.0424 - val_loss: 0.0109 - val_rmse: 0.1042 - val_mae: 0.0501 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0984 - mae: 0.0382 - val_loss: 0.0164 - val_rmse: 0.1282 - val_mae: 0.0581 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0984 - mae: 0.0380 - val_loss: 0.0119 - val_rmse: 0.1092 - val_mae: 0.0493 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0907 - mae: 0.0366 - val_loss: 0.0094 - val_rmse: 0.0968 - val_mae: 0.0424 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0080 - rmse: 0.0894 - mae: 0.0337 - val_loss: 0.0128 - val_rmse: 0.1132 - val_mae: 0.0480 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0069 - rmse: 0.0828 - mae: 0.0306 - val_loss: 0.0122 - val_rmse: 0.1106 - val_mae: 0.0477 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0912 - mae: 0.0339 - val_loss: 0.0081 - val_rmse: 0.0900 - val_mae: 0.0408 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.1002 - mae: 0.0354 - val_loss: 0.0106 - val_rmse: 0.1030 - val_mae: 0.0434 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0085 - rmse: 0.0920 - mae: 0.0334 - val_loss: 0.0087 - val_rmse: 0.0935 - val_mae: 0.0378 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0988 - mae: 0.0345 - val_loss: 0.0113 - val_rmse: 0.1064 - val_mae: 0.0422 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0957 - mae: 0.0333 - val_loss: 0.0116 - val_rmse: 0.1075 - val_mae: 0.0449 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0087 - rmse: 0.0935 - mae: 0.0309 - val_loss: 0.0130 - val_rmse: 0.1141 - val_mae: 0.0460 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0046 - rmse: 0.0678 - mae: 0.0277 - val_loss: 0.0104 - val_rmse: 0.1021 - val_mae: 0.0414 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1022 - mae: 0.0353 - val_loss: 0.0108 - val_rmse: 0.1041 - val_mae: 0.0423 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0069 - rmse: 0.0832 - mae: 0.0314 - val_loss: 0.0103 - val_rmse: 0.1017 - val_mae: 0.0426 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0189 - rmse: 0.1375 - mae: 0.0655 - 11s/epoch - 11ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 20 0.7501469393024227
+3 50 0.7622009672431971
+4 40 0.7629238857181606
+4 50 0.7766186974126891
+4 60 0.7811698784896033
+5 40 0.7834206007216566
+5 50 0.7839647756079726
+5 60 0.7882291056946462
+6 60 0.7892950806697291
+0.5265086594954351 0.9300130816669782
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0119 - rmse: 0.1090 - mae: 0.0542 - val_loss: 0.0122 - val_rmse: 0.1103 - val_mae: 0.0505 - lr: 0.0010 - 4s/epoch - 41ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0987 - mae: 0.0450 - val_loss: 0.0118 - val_rmse: 0.1086 - val_mae: 0.0482 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0116 - rmse: 0.1078 - mae: 0.0461 - val_loss: 0.0102 - val_rmse: 0.1011 - val_mae: 0.0441 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0930 - mae: 0.0377 - val_loss: 0.0113 - val_rmse: 0.1064 - val_mae: 0.0462 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0990 - mae: 0.0391 - val_loss: 0.0075 - val_rmse: 0.0868 - val_mae: 0.0359 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0066 - rmse: 0.0813 - mae: 0.0335 - val_loss: 0.0105 - val_rmse: 0.1022 - val_mae: 0.0433 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0071 - rmse: 0.0842 - mae: 0.0345 - val_loss: 0.0140 - val_rmse: 0.1184 - val_mae: 0.0514 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0060 - rmse: 0.0777 - mae: 0.0329 - val_loss: 0.0111 - val_rmse: 0.1053 - val_mae: 0.0444 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0081 - rmse: 0.0898 - mae: 0.0359 - val_loss: 0.0097 - val_rmse: 0.0984 - val_mae: 0.0405 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0907 - mae: 0.0355 - val_loss: 0.0143 - val_rmse: 0.1197 - val_mae: 0.0506 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0054 - rmse: 0.0733 - mae: 0.0314 - val_loss: 0.0114 - val_rmse: 0.1069 - val_mae: 0.0434 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0070 - rmse: 0.0834 - mae: 0.0357 - val_loss: 0.0117 - val_rmse: 0.1079 - val_mae: 0.0457 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0067 - rmse: 0.0818 - mae: 0.0340 - val_loss: 0.0125 - val_rmse: 0.1117 - val_mae: 0.0476 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0247 - rmse: 0.1573 - mae: 0.0749 - 11s/epoch - 11ms/step
+2 10 0.7818592106073007
+3 20 0.7879047566003928
+3 30 0.8034670010724497
+3 40 0.8056998846326306
+6 30 0.8071930700005273
+6 40 0.8084875658917587
+7 30 0.8107284417728376
+7 40 0.8148921917173734
+0.9131848190837467 0.7670807453416149
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0152 - rmse: 0.1231 - mae: 0.0604 - val_loss: 0.0117 - val_rmse: 0.1083 - val_mae: 0.0451 - lr: 0.0010 - 4s/epoch - 40ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0077 - rmse: 0.0876 - mae: 0.0424 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0413 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0105 - rmse: 0.1025 - mae: 0.0454 - val_loss: 0.0121 - val_rmse: 0.1098 - val_mae: 0.0406 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0987 - mae: 0.0435 - val_loss: 0.0089 - val_rmse: 0.0943 - val_mae: 0.0359 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0080 - rmse: 0.0896 - mae: 0.0420 - val_loss: 0.0109 - val_rmse: 0.1046 - val_mae: 0.0387 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1006 - mae: 0.0439 - val_loss: 0.0120 - val_rmse: 0.1095 - val_mae: 0.0386 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0911 - mae: 0.0395 - val_loss: 0.0126 - val_rmse: 0.1122 - val_mae: 0.0384 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0081 - rmse: 0.0902 - mae: 0.0388 - val_loss: 0.0104 - val_rmse: 0.1019 - val_mae: 0.0358 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0105 - rmse: 0.1025 - mae: 0.0457 - val_loss: 0.0103 - val_rmse: 0.1013 - val_mae: 0.0350 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1018 - mae: 0.0426 - val_loss: 0.0125 - val_rmse: 0.1120 - val_mae: 0.0372 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1016 - mae: 0.0415 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0361 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0144 - rmse: 0.1199 - mae: 0.0489 - val_loss: 0.0116 - val_rmse: 0.1078 - val_mae: 0.0370 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0260 - rmse: 0.1613 - mae: 0.0779 - 11s/epoch - 11ms/step
+2 10 0.7201403044205952
+2 20 0.7272209477989993
+2 30 0.7506215337095267
+2 40 0.7515227258832083
+2 50 0.7580037780890934
+3 40 0.7665697778819653
+5 40 0.7674793833393748
+6 40 0.7677886653351783
+0.6402541156202144 0.8329135909683022
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 128, 'block_size': 1}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0180 - rmse: 0.1342 - mae: 0.0525 - val_loss: 0.0096 - val_rmse: 0.0981 - val_mae: 0.0439 - lr: 0.0010 - 3s/epoch - 33ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0996 - mae: 0.0397 - val_loss: 0.0079 - val_rmse: 0.0888 - val_mae: 0.0398 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1020 - mae: 0.0371 - val_loss: 0.0119 - val_rmse: 0.1089 - val_mae: 0.0462 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0994 - mae: 0.0369 - val_loss: 0.0085 - val_rmse: 0.0921 - val_mae: 0.0395 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0994 - mae: 0.0379 - val_loss: 0.0080 - val_rmse: 0.0893 - val_mae: 0.0368 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.1001 - mae: 0.0371 - val_loss: 0.0107 - val_rmse: 0.1034 - val_mae: 0.0432 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0075 - rmse: 0.0867 - mae: 0.0324 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0440 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0093 - rmse: 0.0966 - mae: 0.0365 - val_loss: 0.0073 - val_rmse: 0.0856 - val_mae: 0.0366 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0959 - mae: 0.0356 - val_loss: 0.0089 - val_rmse: 0.0944 - val_mae: 0.0394 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0084 - rmse: 0.0915 - mae: 0.0349 - val_loss: 0.0078 - val_rmse: 0.0883 - val_mae: 0.0360 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1005 - mae: 0.0378 - val_loss: 0.0088 - val_rmse: 0.0940 - val_mae: 0.0396 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1004 - mae: 0.0365 - val_loss: 0.0101 - val_rmse: 0.1005 - val_mae: 0.0425 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0929 - mae: 0.0337 - val_loss: 0.0121 - val_rmse: 0.1101 - val_mae: 0.0441 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0069 - rmse: 0.0829 - mae: 0.0335 - val_loss: 0.0090 - val_rmse: 0.0950 - val_mae: 0.0398 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0117 - rmse: 0.1082 - mae: 0.0396 - val_loss: 0.0100 - val_rmse: 0.0999 - val_mae: 0.0407 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0970 - mae: 0.0375 - val_loss: 0.0100 - val_rmse: 0.0999 - val_mae: 0.0421 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+1000/1000 - 12s - loss: 0.0213 - rmse: 0.1459 - mae: 0.0715 - 12s/epoch - 12ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 50 0.7540561861386297
+3 60 0.7583536102285791
+4 40 0.769818755124776
+4 50 0.7736102718404767
+4 60 0.7810258139212273
+5 40 0.7958750076636524
+0.6127034831378251 0.8871239020743786
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0126 - rmse: 0.1121 - mae: 0.0502 - val_loss: 0.0110 - val_rmse: 0.1049 - val_mae: 0.0485 - lr: 0.0010 - 3s/epoch - 33ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0131 - rmse: 0.1145 - mae: 0.0465 - val_loss: 0.0140 - val_rmse: 0.1184 - val_mae: 0.0528 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0110 - rmse: 0.1049 - mae: 0.0427 - val_loss: 0.0141 - val_rmse: 0.1186 - val_mae: 0.0508 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0129 - rmse: 0.1135 - mae: 0.0467 - val_loss: 0.0118 - val_rmse: 0.1084 - val_mae: 0.0439 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0123 - rmse: 0.1108 - mae: 0.0431 - val_loss: 0.0133 - val_rmse: 0.1155 - val_mae: 0.0492 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0091 - rmse: 0.0956 - mae: 0.0390 - val_loss: 0.0122 - val_rmse: 0.1103 - val_mae: 0.0478 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0112 - rmse: 0.1058 - mae: 0.0422 - val_loss: 0.0124 - val_rmse: 0.1114 - val_mae: 0.0481 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1039 - mae: 0.0432 - val_loss: 0.0139 - val_rmse: 0.1179 - val_mae: 0.0498 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0109 - rmse: 0.1043 - mae: 0.0426 - val_loss: 0.0126 - val_rmse: 0.1124 - val_mae: 0.0463 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0267 - rmse: 0.1633 - mae: 0.0807 - 11s/epoch - 11ms/step
+2 10 0.7818592106073007
+3 20 0.7915124036754619
+3 30 0.8036181619800491
+5 30 0.8041145312078919
+5 40 0.8047079153933888
+6 30 0.8047685559064295
+7 30 0.8054520062847214
+7 40 0.8070361711213778
+0.903933834257368 0.7669612995699953
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0143 - rmse: 0.1195 - mae: 0.0556 - val_loss: 0.0109 - val_rmse: 0.1044 - val_mae: 0.0407 - lr: 0.0010 - 3s/epoch - 33ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0982 - mae: 0.0430 - val_loss: 0.0098 - val_rmse: 0.0991 - val_mae: 0.0385 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0124 - rmse: 0.1116 - mae: 0.0499 - val_loss: 0.0128 - val_rmse: 0.1130 - val_mae: 0.0423 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0141 - rmse: 0.1189 - mae: 0.0502 - val_loss: 0.0123 - val_rmse: 0.1111 - val_mae: 0.0397 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0115 - rmse: 0.1071 - mae: 0.0437 - val_loss: 0.0114 - val_rmse: 0.1070 - val_mae: 0.0377 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0148 - rmse: 0.1215 - mae: 0.0490 - val_loss: 0.0106 - val_rmse: 0.1028 - val_mae: 0.0363 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0989 - mae: 0.0415 - val_loss: 0.0101 - val_rmse: 0.1005 - val_mae: 0.0355 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1022 - mae: 0.0417 - val_loss: 0.0129 - val_rmse: 0.1137 - val_mae: 0.0386 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0088 - rmse: 0.0939 - mae: 0.0412 - val_loss: 0.0103 - val_rmse: 0.1016 - val_mae: 0.0361 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0111 - rmse: 0.1055 - mae: 0.0462 - val_loss: 0.0105 - val_rmse: 0.1027 - val_mae: 0.0356 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0264 - rmse: 0.1625 - mae: 0.0800 - 11s/epoch - 11ms/step
+2 10 0.7201805611291207
+2 20 0.7269040308410875
+2 30 0.7504798582871037
+2 40 0.7513810504607854
+2 50 0.7580037780890934
+3 30 0.7617600766796837
+3 40 0.7620707157244537
+4 40 0.7737523875860536
+6 40 0.77377330106789
+6 50 0.7753250857401308
+0.5937420239918325 0.8676508901432913
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 128, 'block_size': 2}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0145 - rmse: 0.1206 - mae: 0.0507 - val_loss: 0.0106 - val_rmse: 0.1029 - val_mae: 0.0485 - lr: 0.0010 - 4s/epoch - 35ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.0998 - mae: 0.0428 - val_loss: 0.0101 - val_rmse: 0.1003 - val_mae: 0.0480 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0093 - rmse: 0.0964 - mae: 0.0376 - val_loss: 0.0127 - val_rmse: 0.1126 - val_mae: 0.0514 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0972 - mae: 0.0378 - val_loss: 0.0093 - val_rmse: 0.0967 - val_mae: 0.0460 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0908 - mae: 0.0373 - val_loss: 0.0068 - val_rmse: 0.0827 - val_mae: 0.0385 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0989 - mae: 0.0361 - val_loss: 0.0113 - val_rmse: 0.1064 - val_mae: 0.0455 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0068 - rmse: 0.0828 - mae: 0.0312 - val_loss: 0.0103 - val_rmse: 0.1015 - val_mae: 0.0450 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0986 - mae: 0.0351 - val_loss: 0.0069 - val_rmse: 0.0833 - val_mae: 0.0389 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1003 - mae: 0.0352 - val_loss: 0.0090 - val_rmse: 0.0950 - val_mae: 0.0415 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0079 - rmse: 0.0887 - mae: 0.0333 - val_loss: 0.0087 - val_rmse: 0.0932 - val_mae: 0.0403 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0967 - mae: 0.0361 - val_loss: 0.0092 - val_rmse: 0.0961 - val_mae: 0.0413 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0930 - mae: 0.0342 - val_loss: 0.0104 - val_rmse: 0.1019 - val_mae: 0.0459 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0069 - rmse: 0.0833 - mae: 0.0308 - val_loss: 0.0123 - val_rmse: 0.1109 - val_mae: 0.0475 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0208 - rmse: 0.1443 - mae: 0.0722 - 11s/epoch - 11ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 60 0.7510874778226198
+4 40 0.7555319582794793
+4 50 0.7563401288327413
+4 60 0.7569080840488727
+4 70 0.7603547396581101
+5 40 0.7657614364049061
+5 50 0.7802297538112869
+5 80 0.7811758244635414
+6 60 0.7811764347078041
+0.56596154743883 0.8980564380489628
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0105 - rmse: 0.1023 - mae: 0.0464 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0473 - lr: 0.0010 - 4s/epoch - 37ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0089 - rmse: 0.0943 - mae: 0.0416 - val_loss: 0.0109 - val_rmse: 0.1045 - val_mae: 0.0489 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0078 - rmse: 0.0881 - mae: 0.0388 - val_loss: 0.0104 - val_rmse: 0.1020 - val_mae: 0.0454 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0121 - rmse: 0.1101 - mae: 0.0441 - val_loss: 0.0092 - val_rmse: 0.0960 - val_mae: 0.0400 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0973 - mae: 0.0377 - val_loss: 0.0118 - val_rmse: 0.1085 - val_mae: 0.0455 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0077 - rmse: 0.0879 - mae: 0.0362 - val_loss: 0.0108 - val_rmse: 0.1041 - val_mae: 0.0446 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0959 - mae: 0.0367 - val_loss: 0.0111 - val_rmse: 0.1055 - val_mae: 0.0447 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0983 - mae: 0.0382 - val_loss: 0.0119 - val_rmse: 0.1089 - val_mae: 0.0457 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0976 - mae: 0.0370 - val_loss: 0.0108 - val_rmse: 0.1038 - val_mae: 0.0423 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0062 - rmse: 0.0790 - mae: 0.0340 - val_loss: 0.0113 - val_rmse: 0.1061 - val_mae: 0.0440 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0071 - rmse: 0.0841 - mae: 0.0323 - val_loss: 0.0099 - val_rmse: 0.0995 - val_mae: 0.0418 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0981 - mae: 0.0369 - val_loss: 0.0086 - val_rmse: 0.0926 - val_mae: 0.0384 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0063 - rmse: 0.0797 - mae: 0.0326 - val_loss: 0.0098 - val_rmse: 0.0992 - val_mae: 0.0411 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0073 - rmse: 0.0856 - mae: 0.0337 - val_loss: 0.0109 - val_rmse: 0.1046 - val_mae: 0.0437 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0066 - rmse: 0.0810 - mae: 0.0349 - val_loss: 0.0092 - val_rmse: 0.0959 - val_mae: 0.0407 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0976 - mae: 0.0377 - val_loss: 0.0129 - val_rmse: 0.1136 - val_mae: 0.0477 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 17/100
+100/100 - 2s - loss: 0.0088 - rmse: 0.0938 - mae: 0.0385 - val_loss: 0.0104 - val_rmse: 0.1017 - val_mae: 0.0418 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 18/100
+100/100 - 2s - loss: 0.0066 - rmse: 0.0810 - mae: 0.0327 - val_loss: 0.0130 - val_rmse: 0.1142 - val_mae: 0.0465 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 19/100
+100/100 - 2s - loss: 0.0085 - rmse: 0.0919 - mae: 0.0369 - val_loss: 0.0097 - val_rmse: 0.0984 - val_mae: 0.0410 - lr: 1.0000e-07 - 2s/epoch - 19ms/step
+Epoch 20/100
+100/100 - 2s - loss: 0.0112 - rmse: 0.1060 - mae: 0.0441 - val_loss: 0.0110 - val_rmse: 0.1051 - val_mae: 0.0420 - lr: 1.0000e-07 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0241 - rmse: 0.1553 - mae: 0.0718 - 11s/epoch - 11ms/step
+2 10 0.7818592106073007
+3 20 0.7861375793693762
+3 30 0.8037937864421002
+3 60 0.8048183476336345
+0.9065554785526699 0.7544194935499283
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0135 - rmse: 0.1160 - mae: 0.0556 - val_loss: 0.0109 - val_rmse: 0.1044 - val_mae: 0.0414 - lr: 0.0010 - 4s/epoch - 37ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0906 - mae: 0.0411 - val_loss: 0.0125 - val_rmse: 0.1119 - val_mae: 0.0394 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0119 - rmse: 0.1089 - mae: 0.0447 - val_loss: 0.0118 - val_rmse: 0.1086 - val_mae: 0.0396 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0989 - mae: 0.0421 - val_loss: 0.0099 - val_rmse: 0.0993 - val_mae: 0.0357 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0994 - mae: 0.0407 - val_loss: 0.0117 - val_rmse: 0.1083 - val_mae: 0.0385 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0106 - rmse: 0.1030 - mae: 0.0426 - val_loss: 0.0114 - val_rmse: 0.1070 - val_mae: 0.0379 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0080 - rmse: 0.0892 - mae: 0.0376 - val_loss: 0.0103 - val_rmse: 0.1014 - val_mae: 0.0351 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0068 - rmse: 0.0824 - mae: 0.0356 - val_loss: 0.0090 - val_rmse: 0.0951 - val_mae: 0.0339 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0985 - mae: 0.0430 - val_loss: 0.0095 - val_rmse: 0.0977 - val_mae: 0.0337 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0971 - mae: 0.0380 - val_loss: 0.0096 - val_rmse: 0.0978 - val_mae: 0.0330 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0076 - rmse: 0.0871 - mae: 0.0357 - val_loss: 0.0096 - val_rmse: 0.0982 - val_mae: 0.0338 - lr: 1.0000e-04 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0111 - rmse: 0.1052 - mae: 0.0427 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0355 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0048 - rmse: 0.0690 - mae: 0.0310 - val_loss: 0.0097 - val_rmse: 0.0985 - val_mae: 0.0333 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0077 - rmse: 0.0880 - mae: 0.0370 - val_loss: 0.0104 - val_rmse: 0.1018 - val_mae: 0.0337 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0113 - rmse: 0.1065 - mae: 0.0438 - val_loss: 0.0092 - val_rmse: 0.0958 - val_mae: 0.0326 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0054 - rmse: 0.0736 - mae: 0.0318 - val_loss: 0.0111 - val_rmse: 0.1055 - val_mae: 0.0379 - lr: 1.0000e-06 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0218 - rmse: 0.1475 - mae: 0.0714 - 11s/epoch - 11ms/step
+2 10 0.7201403044205952
+2 20 0.7297701056518268
+2 30 0.7506215337095267
+2 40 0.7515227258832083
+2 50 0.7580037780890934
+3 30 0.759488457911765
+3 40 0.7641679370376597
+4 40 0.7697480145326907
+0.595955366258295 0.8604429005644811
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 128, 'block_size': 3}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0139 - rmse: 0.1178 - mae: 0.0515 - val_loss: 0.0109 - val_rmse: 0.1042 - val_mae: 0.0516 - lr: 0.0010 - 4s/epoch - 40ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0105 - rmse: 0.1023 - mae: 0.0428 - val_loss: 0.0101 - val_rmse: 0.1007 - val_mae: 0.0483 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0107 - rmse: 0.1034 - mae: 0.0392 - val_loss: 0.0143 - val_rmse: 0.1197 - val_mae: 0.0540 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0977 - mae: 0.0387 - val_loss: 0.0106 - val_rmse: 0.1032 - val_mae: 0.0470 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.1002 - mae: 0.0390 - val_loss: 0.0083 - val_rmse: 0.0911 - val_mae: 0.0412 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0904 - mae: 0.0345 - val_loss: 0.0127 - val_rmse: 0.1125 - val_mae: 0.0476 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0081 - rmse: 0.0899 - mae: 0.0329 - val_loss: 0.0118 - val_rmse: 0.1087 - val_mae: 0.0466 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1008 - mae: 0.0360 - val_loss: 0.0075 - val_rmse: 0.0867 - val_mae: 0.0375 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0111 - rmse: 0.1056 - mae: 0.0364 - val_loss: 0.0101 - val_rmse: 0.1005 - val_mae: 0.0420 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0078 - rmse: 0.0881 - mae: 0.0341 - val_loss: 0.0095 - val_rmse: 0.0974 - val_mae: 0.0404 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0115 - rmse: 0.1070 - mae: 0.0372 - val_loss: 0.0096 - val_rmse: 0.0981 - val_mae: 0.0401 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0968 - mae: 0.0352 - val_loss: 0.0109 - val_rmse: 0.1046 - val_mae: 0.0443 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0077 - rmse: 0.0877 - mae: 0.0309 - val_loss: 0.0132 - val_rmse: 0.1148 - val_mae: 0.0465 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0048 - rmse: 0.0696 - mae: 0.0288 - val_loss: 0.0096 - val_rmse: 0.0979 - val_mae: 0.0407 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0982 - mae: 0.0364 - val_loss: 0.0103 - val_rmse: 0.1015 - val_mae: 0.0413 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0081 - rmse: 0.0902 - mae: 0.0333 - val_loss: 0.0106 - val_rmse: 0.1029 - val_mae: 0.0430 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0195 - rmse: 0.1397 - mae: 0.0666 - 11s/epoch - 11ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 40 0.7471208462293465
+3 50 0.7480594441136371
+3 60 0.7581632953493666
+3 70 0.7617162161101098
+4 40 0.7692954035046287
+4 50 0.7697263110029814
+4 60 0.7724054982758466
+4 70 0.7747818563349711
+5 50 0.7793767829262631
+5 70 0.7876669702038421
+0.5767484044787964 0.8978695570921323
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0116 - rmse: 0.1075 - mae: 0.0513 - val_loss: 0.0119 - val_rmse: 0.1093 - val_mae: 0.0473 - lr: 0.0010 - 4s/epoch - 41ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0091 - rmse: 0.0957 - mae: 0.0423 - val_loss: 0.0112 - val_rmse: 0.1060 - val_mae: 0.0462 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0109 - rmse: 0.1043 - mae: 0.0436 - val_loss: 0.0093 - val_rmse: 0.0963 - val_mae: 0.0408 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0906 - mae: 0.0354 - val_loss: 0.0118 - val_rmse: 0.1086 - val_mae: 0.0453 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0115 - rmse: 0.1071 - mae: 0.0389 - val_loss: 0.0083 - val_rmse: 0.0913 - val_mae: 0.0365 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0067 - rmse: 0.0817 - mae: 0.0328 - val_loss: 0.0104 - val_rmse: 0.1021 - val_mae: 0.0427 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0073 - rmse: 0.0853 - mae: 0.0335 - val_loss: 0.0140 - val_rmse: 0.1181 - val_mae: 0.0505 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0061 - rmse: 0.0784 - mae: 0.0320 - val_loss: 0.0091 - val_rmse: 0.0952 - val_mae: 0.0413 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0078 - rmse: 0.0886 - mae: 0.0334 - val_loss: 0.0085 - val_rmse: 0.0923 - val_mae: 0.0388 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0077 - rmse: 0.0875 - mae: 0.0335 - val_loss: 0.0134 - val_rmse: 0.1157 - val_mae: 0.0489 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0046 - rmse: 0.0676 - mae: 0.0294 - val_loss: 0.0099 - val_rmse: 0.0994 - val_mae: 0.0412 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0067 - rmse: 0.0816 - mae: 0.0331 - val_loss: 0.0097 - val_rmse: 0.0985 - val_mae: 0.0433 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0060 - rmse: 0.0771 - mae: 0.0313 - val_loss: 0.0109 - val_rmse: 0.1044 - val_mae: 0.0451 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0238 - rmse: 0.1544 - mae: 0.0706 - 11s/epoch - 11ms/step
+2 10 0.7818592106073007
+3 20 0.7881376424484146
+3 30 0.7881790196827975
+4 20 0.8017162655609151
+4 30 0.8043477056625606
+5 40 0.8083620318253567
+7 40 0.8094224485539426
+8 40 0.8098331164425272
+9 40 0.8100413582609057
+0.9059217245404143 0.7668418537983756
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0144 - rmse: 0.1200 - mae: 0.0571 - val_loss: 0.0114 - val_rmse: 0.1066 - val_mae: 0.0432 - lr: 0.0010 - 4s/epoch - 41ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0076 - rmse: 0.0870 - mae: 0.0415 - val_loss: 0.0100 - val_rmse: 0.1002 - val_mae: 0.0392 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0106 - rmse: 0.1030 - mae: 0.0445 - val_loss: 0.0115 - val_rmse: 0.1073 - val_mae: 0.0395 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1017 - mae: 0.0434 - val_loss: 0.0093 - val_rmse: 0.0965 - val_mae: 0.0349 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0079 - rmse: 0.0887 - mae: 0.0401 - val_loss: 0.0107 - val_rmse: 0.1033 - val_mae: 0.0369 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0119 - rmse: 0.1093 - mae: 0.0431 - val_loss: 0.0128 - val_rmse: 0.1131 - val_mae: 0.0382 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0081 - rmse: 0.0902 - mae: 0.0372 - val_loss: 0.0110 - val_rmse: 0.1050 - val_mae: 0.0357 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0067 - rmse: 0.0817 - mae: 0.0347 - val_loss: 0.0092 - val_rmse: 0.0961 - val_mae: 0.0330 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1015 - mae: 0.0428 - val_loss: 0.0092 - val_rmse: 0.0959 - val_mae: 0.0324 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1011 - mae: 0.0399 - val_loss: 0.0114 - val_rmse: 0.1070 - val_mae: 0.0344 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0981 - mae: 0.0385 - val_loss: 0.0098 - val_rmse: 0.0988 - val_mae: 0.0332 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0119 - rmse: 0.1091 - mae: 0.0435 - val_loss: 0.0102 - val_rmse: 0.1009 - val_mae: 0.0342 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0060 - rmse: 0.0775 - mae: 0.0327 - val_loss: 0.0104 - val_rmse: 0.1022 - val_mae: 0.0332 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0914 - mae: 0.0377 - val_loss: 0.0099 - val_rmse: 0.0997 - val_mae: 0.0326 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0107 - rmse: 0.1033 - mae: 0.0429 - val_loss: 0.0100 - val_rmse: 0.0998 - val_mae: 0.0325 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0052 - rmse: 0.0718 - mae: 0.0317 - val_loss: 0.0122 - val_rmse: 0.1103 - val_mae: 0.0378 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 17/100
+100/100 - 2s - loss: 0.0074 - rmse: 0.0859 - mae: 0.0368 - val_loss: 0.0105 - val_rmse: 0.1026 - val_mae: 0.0346 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+1000/1000 - 11s - loss: 0.0236 - rmse: 0.1535 - mae: 0.0714 - 11s/epoch - 11ms/step
+2 10 0.722343920234032
+2 20 0.7294245636124361
+2 30 0.7506215337095267
+2 40 0.7515227258832083
+2 50 0.7580037780890934
+3 40 0.7666299807726905
+0.6294865045941807 0.8390794615718628
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 256, 'block_size': 1}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0182 - rmse: 0.1350 - mae: 0.0515 - val_loss: 0.0099 - val_rmse: 0.0993 - val_mae: 0.0427 - lr: 0.0010 - 3s/epoch - 34ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0988 - mae: 0.0386 - val_loss: 0.0075 - val_rmse: 0.0866 - val_mae: 0.0379 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0107 - rmse: 0.1035 - mae: 0.0370 - val_loss: 0.0125 - val_rmse: 0.1119 - val_mae: 0.0471 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1039 - mae: 0.0383 - val_loss: 0.0084 - val_rmse: 0.0916 - val_mae: 0.0396 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0111 - rmse: 0.1052 - mae: 0.0407 - val_loss: 0.0079 - val_rmse: 0.0891 - val_mae: 0.0375 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0120 - rmse: 0.1095 - mae: 0.0396 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0430 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0911 - mae: 0.0346 - val_loss: 0.0109 - val_rmse: 0.1042 - val_mae: 0.0444 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0106 - rmse: 0.1031 - mae: 0.0387 - val_loss: 0.0076 - val_rmse: 0.0870 - val_mae: 0.0372 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0115 - rmse: 0.1073 - mae: 0.0398 - val_loss: 0.0088 - val_rmse: 0.0940 - val_mae: 0.0396 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0961 - mae: 0.0369 - val_loss: 0.0077 - val_rmse: 0.0880 - val_mae: 0.0361 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 12s - loss: 0.0280 - rmse: 0.1674 - mae: 0.0800 - 12s/epoch - 12ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 40 0.7842091080904698
+4 50 0.789184956617936
+5 40 0.7943259456887313
+5 50 0.7947027397592491
+6 40 0.794983117439976
+7 50 0.7953742247979882
+7 60 0.7972492134700306
+0.5909197004354756 0.9085217716314707
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0106 - rmse: 0.1032 - mae: 0.0461 - val_loss: 0.0129 - val_rmse: 0.1134 - val_mae: 0.0482 - lr: 0.0010 - 3s/epoch - 34ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0123 - rmse: 0.1109 - mae: 0.0433 - val_loss: 0.0134 - val_rmse: 0.1158 - val_mae: 0.0508 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0118 - rmse: 0.1087 - mae: 0.0440 - val_loss: 0.0123 - val_rmse: 0.1110 - val_mae: 0.0482 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0130 - rmse: 0.1139 - mae: 0.0449 - val_loss: 0.0105 - val_rmse: 0.1025 - val_mae: 0.0412 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0145 - rmse: 0.1203 - mae: 0.0439 - val_loss: 0.0130 - val_rmse: 0.1141 - val_mae: 0.0487 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1005 - mae: 0.0407 - val_loss: 0.0128 - val_rmse: 0.1129 - val_mae: 0.0471 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0110 - rmse: 0.1047 - mae: 0.0407 - val_loss: 0.0116 - val_rmse: 0.1078 - val_mae: 0.0465 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0114 - rmse: 0.1069 - mae: 0.0429 - val_loss: 0.0131 - val_rmse: 0.1144 - val_mae: 0.0476 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0127 - rmse: 0.1125 - mae: 0.0430 - val_loss: 0.0116 - val_rmse: 0.1076 - val_mae: 0.0442 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0088 - rmse: 0.0939 - mae: 0.0394 - val_loss: 0.0126 - val_rmse: 0.1123 - val_mae: 0.0466 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0091 - rmse: 0.0955 - mae: 0.0368 - val_loss: 0.0118 - val_rmse: 0.1085 - val_mae: 0.0444 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1022 - mae: 0.0399 - val_loss: 0.0089 - val_rmse: 0.0943 - val_mae: 0.0404 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0973 - mae: 0.0379 - val_loss: 0.0103 - val_rmse: 0.1014 - val_mae: 0.0425 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0087 - rmse: 0.0933 - mae: 0.0377 - val_loss: 0.0121 - val_rmse: 0.1102 - val_mae: 0.0462 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0993 - mae: 0.0412 - val_loss: 0.0098 - val_rmse: 0.0989 - val_mae: 0.0428 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0106 - rmse: 0.1030 - mae: 0.0411 - val_loss: 0.0138 - val_rmse: 0.1173 - val_mae: 0.0494 - lr: 1.0000e-06 - 2s/epoch - 20ms/step
+Epoch 17/100
+100/100 - 2s - loss: 0.0113 - rmse: 0.1064 - mae: 0.0429 - val_loss: 0.0114 - val_rmse: 0.1069 - val_mae: 0.0441 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 18/100
+100/100 - 2s - loss: 0.0093 - rmse: 0.0965 - mae: 0.0373 - val_loss: 0.0145 - val_rmse: 0.1206 - val_mae: 0.0491 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 19/100
+100/100 - 2s - loss: 0.0114 - rmse: 0.1067 - mae: 0.0426 - val_loss: 0.0102 - val_rmse: 0.1011 - val_mae: 0.0431 - lr: 1.0000e-07 - 2s/epoch - 19ms/step
+Epoch 20/100
+100/100 - 2s - loss: 0.0143 - rmse: 0.1195 - mae: 0.0493 - val_loss: 0.0108 - val_rmse: 0.1039 - val_mae: 0.0432 - lr: 1.0000e-07 - 2s/epoch - 19ms/step
+1000/1000 - 12s - loss: 0.0267 - rmse: 0.1635 - mae: 0.0797 - 12s/epoch - 12ms/step
+2 10 0.7818592106073007
+3 20 0.7900041119685742
+3 30 0.8021098702731615
+3 40 0.8056667436249969
+4 50 0.8065096372406793
+5 30 0.8073586282702125
+6 30 0.8078823703389226
+7 30 0.808336309244693
+0.9242504377006128 0.7546583850931677
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 3s - loss: 0.0128 - rmse: 0.1132 - mae: 0.0527 - val_loss: 0.0108 - val_rmse: 0.1041 - val_mae: 0.0399 - lr: 0.0010 - 3s/epoch - 34ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0960 - mae: 0.0419 - val_loss: 0.0098 - val_rmse: 0.0991 - val_mae: 0.0380 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0130 - rmse: 0.1141 - mae: 0.0503 - val_loss: 0.0129 - val_rmse: 0.1134 - val_mae: 0.0406 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0130 - rmse: 0.1138 - mae: 0.0493 - val_loss: 0.0127 - val_rmse: 0.1128 - val_mae: 0.0397 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0115 - rmse: 0.1070 - mae: 0.0441 - val_loss: 0.0121 - val_rmse: 0.1100 - val_mae: 0.0382 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0167 - rmse: 0.1291 - mae: 0.0523 - val_loss: 0.0102 - val_rmse: 0.1011 - val_mae: 0.0363 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0146 - rmse: 0.1208 - mae: 0.0477 - val_loss: 0.0110 - val_rmse: 0.1049 - val_mae: 0.0362 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0107 - rmse: 0.1034 - mae: 0.0426 - val_loss: 0.0126 - val_rmse: 0.1121 - val_mae: 0.0381 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1011 - mae: 0.0444 - val_loss: 0.0106 - val_rmse: 0.1029 - val_mae: 0.0362 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0136 - rmse: 0.1166 - mae: 0.0510 - val_loss: 0.0109 - val_rmse: 0.1042 - val_mae: 0.0359 - lr: 1.0000e-05 - 2s/epoch - 19ms/step
+1000/1000 - 12s - loss: 0.0292 - rmse: 0.1710 - mae: 0.0835 - 12s/epoch - 12ms/step
+2 10 0.6627081954789299
+2 20 0.7272209477989993
+2 30 0.7540029061647473
+2 40 0.7693765278867467
+3 40 0.7700472525402349
+4 40 0.7711550222301431
+4 50 0.7722527742288026
+8 50 0.7724153812880825
+9 50 0.7734589236960302
+0.5743324081163859 0.8872774641771602
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 256, 'block_size': 2}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0143 - rmse: 0.1195 - mae: 0.0494 - val_loss: 0.0097 - val_rmse: 0.0986 - val_mae: 0.0462 - lr: 0.0010 - 4s/epoch - 38ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.0999 - mae: 0.0425 - val_loss: 0.0097 - val_rmse: 0.0987 - val_mae: 0.0455 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0976 - mae: 0.0377 - val_loss: 0.0130 - val_rmse: 0.1141 - val_mae: 0.0510 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1010 - mae: 0.0387 - val_loss: 0.0090 - val_rmse: 0.0951 - val_mae: 0.0433 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0073 - rmse: 0.0857 - mae: 0.0362 - val_loss: 0.0071 - val_rmse: 0.0842 - val_mae: 0.0377 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0079 - rmse: 0.0889 - mae: 0.0339 - val_loss: 0.0115 - val_rmse: 0.1070 - val_mae: 0.0459 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0074 - rmse: 0.0859 - mae: 0.0321 - val_loss: 0.0104 - val_rmse: 0.1022 - val_mae: 0.0452 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1006 - mae: 0.0357 - val_loss: 0.0071 - val_rmse: 0.0844 - val_mae: 0.0385 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0120 - rmse: 0.1097 - mae: 0.0373 - val_loss: 0.0088 - val_rmse: 0.0936 - val_mae: 0.0410 - lr: 1.0000e-04 - 2s/epoch - 21ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0913 - mae: 0.0340 - val_loss: 0.0079 - val_rmse: 0.0891 - val_mae: 0.0387 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1040 - mae: 0.0365 - val_loss: 0.0092 - val_rmse: 0.0961 - val_mae: 0.0402 - lr: 1.0000e-04 - 2s/epoch - 21ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0960 - mae: 0.0352 - val_loss: 0.0102 - val_rmse: 0.1008 - val_mae: 0.0444 - lr: 1.0000e-05 - 2s/epoch - 21ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0906 - mae: 0.0322 - val_loss: 0.0112 - val_rmse: 0.1057 - val_mae: 0.0453 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+1000/1000 - 12s - loss: 0.0220 - rmse: 0.1482 - mae: 0.0731 - 12s/epoch - 12ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 40 0.7846702963254965
+3 50 0.78862480185362
+4 50 0.794320945995125
+5 40 0.7992857707782193
+0.6432167841494888 0.8812371519342179
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0111 - rmse: 0.1055 - mae: 0.0451 - val_loss: 0.0131 - val_rmse: 0.1145 - val_mae: 0.0467 - lr: 0.0010 - 4s/epoch - 39ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0982 - mae: 0.0404 - val_loss: 0.0140 - val_rmse: 0.1183 - val_mae: 0.0502 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0088 - rmse: 0.0936 - mae: 0.0382 - val_loss: 0.0125 - val_rmse: 0.1117 - val_mae: 0.0474 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0127 - rmse: 0.1129 - mae: 0.0439 - val_loss: 0.0097 - val_rmse: 0.0984 - val_mae: 0.0406 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0087 - rmse: 0.0934 - mae: 0.0365 - val_loss: 0.0106 - val_rmse: 0.1030 - val_mae: 0.0433 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0070 - rmse: 0.0837 - mae: 0.0352 - val_loss: 0.0098 - val_rmse: 0.0990 - val_mae: 0.0418 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0927 - mae: 0.0353 - val_loss: 0.0109 - val_rmse: 0.1044 - val_mae: 0.0427 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0085 - rmse: 0.0921 - mae: 0.0366 - val_loss: 0.0119 - val_rmse: 0.1093 - val_mae: 0.0436 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0084 - rmse: 0.0919 - mae: 0.0354 - val_loss: 0.0099 - val_rmse: 0.0994 - val_mae: 0.0397 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0075 - rmse: 0.0863 - mae: 0.0336 - val_loss: 0.0110 - val_rmse: 0.1047 - val_mae: 0.0425 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0076 - rmse: 0.0874 - mae: 0.0320 - val_loss: 0.0094 - val_rmse: 0.0972 - val_mae: 0.0398 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1007 - mae: 0.0361 - val_loss: 0.0079 - val_rmse: 0.0887 - val_mae: 0.0368 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0065 - rmse: 0.0804 - mae: 0.0314 - val_loss: 0.0099 - val_rmse: 0.0994 - val_mae: 0.0401 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0069 - rmse: 0.0833 - mae: 0.0322 - val_loss: 0.0108 - val_rmse: 0.1039 - val_mae: 0.0426 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0059 - rmse: 0.0769 - mae: 0.0335 - val_loss: 0.0090 - val_rmse: 0.0950 - val_mae: 0.0393 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0084 - rmse: 0.0914 - mae: 0.0367 - val_loss: 0.0130 - val_rmse: 0.1140 - val_mae: 0.0464 - lr: 1.0000e-06 - 2s/epoch - 20ms/step
+Epoch 17/100
+100/100 - 2s - loss: 0.0089 - rmse: 0.0941 - mae: 0.0381 - val_loss: 0.0096 - val_rmse: 0.0980 - val_mae: 0.0395 - lr: 1.0000e-06 - 2s/epoch - 19ms/step
+Epoch 18/100
+100/100 - 2s - loss: 0.0064 - rmse: 0.0802 - mae: 0.0320 - val_loss: 0.0125 - val_rmse: 0.1116 - val_mae: 0.0441 - lr: 1.0000e-06 - 2s/epoch - 20ms/step
+Epoch 19/100
+100/100 - 2s - loss: 0.0080 - rmse: 0.0894 - mae: 0.0352 - val_loss: 0.0096 - val_rmse: 0.0980 - val_mae: 0.0392 - lr: 1.0000e-07 - 2s/epoch - 20ms/step
+Epoch 20/100
+100/100 - 2s - loss: 0.0111 - rmse: 0.1053 - mae: 0.0425 - val_loss: 0.0106 - val_rmse: 0.1031 - val_mae: 0.0403 - lr: 1.0000e-07 - 2s/epoch - 21ms/step
+1000/1000 - 12s - loss: 0.0219 - rmse: 0.1480 - mae: 0.0707 - 12s/epoch - 12ms/step
+2 10 0.7762837426662414
+2 20 0.7818592106073007
+3 20 0.7848055821350488
+3 30 0.8035590539797479
+3 40 0.8040587184025331
+3 50 0.8042557634973597
+3 60 0.8067777704509111
+4 50 0.8098505790994743
+0.8925080245112343 0.765527950310559
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0134 - rmse: 0.1156 - mae: 0.0549 - val_loss: 0.0117 - val_rmse: 0.1083 - val_mae: 0.0411 - lr: 0.0010 - 4s/epoch - 39ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0089 - rmse: 0.0945 - mae: 0.0416 - val_loss: 0.0129 - val_rmse: 0.1135 - val_mae: 0.0398 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0126 - rmse: 0.1123 - mae: 0.0452 - val_loss: 0.0122 - val_rmse: 0.1106 - val_mae: 0.0390 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0989 - mae: 0.0416 - val_loss: 0.0095 - val_rmse: 0.0976 - val_mae: 0.0339 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0929 - mae: 0.0397 - val_loss: 0.0130 - val_rmse: 0.1139 - val_mae: 0.0385 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1008 - mae: 0.0425 - val_loss: 0.0118 - val_rmse: 0.1088 - val_mae: 0.0380 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0081 - rmse: 0.0898 - mae: 0.0378 - val_loss: 0.0112 - val_rmse: 0.1060 - val_mae: 0.0355 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0067 - rmse: 0.0818 - mae: 0.0361 - val_loss: 0.0100 - val_rmse: 0.1000 - val_mae: 0.0348 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0969 - mae: 0.0428 - val_loss: 0.0099 - val_rmse: 0.0996 - val_mae: 0.0337 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0984 - mae: 0.0390 - val_loss: 0.0107 - val_rmse: 0.1036 - val_mae: 0.0339 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0908 - mae: 0.0365 - val_loss: 0.0101 - val_rmse: 0.1004 - val_mae: 0.0340 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1016 - mae: 0.0425 - val_loss: 0.0116 - val_rmse: 0.1078 - val_mae: 0.0357 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+1000/1000 - 12s - loss: 0.0248 - rmse: 0.1576 - mae: 0.0751 - 12s/epoch - 12ms/step
+2 10 0.7211719329392945
+2 20 0.7272209477989993
+2 30 0.7506215337095267
+2 40 0.7515227258832083
+2 50 0.7580037780890934
+3 40 0.7665697778819653
+0.6373069806023481 0.8313504125054277
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 1, 'embedding_dim': 256, 'block_size': 3}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0147 - rmse: 0.1211 - mae: 0.0505 - val_loss: 0.0098 - val_rmse: 0.0988 - val_mae: 0.0482 - lr: 0.0010 - 4s/epoch - 42ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0990 - mae: 0.0404 - val_loss: 0.0098 - val_rmse: 0.0992 - val_mae: 0.0464 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0100 - rmse: 0.1001 - mae: 0.0366 - val_loss: 0.0147 - val_rmse: 0.1214 - val_mae: 0.0541 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0091 - rmse: 0.0954 - mae: 0.0360 - val_loss: 0.0092 - val_rmse: 0.0958 - val_mae: 0.0426 - lr: 0.0010 - 2s/epoch - 23ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0905 - mae: 0.0347 - val_loss: 0.0071 - val_rmse: 0.0841 - val_mae: 0.0369 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0075 - rmse: 0.0867 - mae: 0.0325 - val_loss: 0.0121 - val_rmse: 0.1102 - val_mae: 0.0454 - lr: 0.0010 - 2s/epoch - 22ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0079 - rmse: 0.0890 - mae: 0.0316 - val_loss: 0.0105 - val_rmse: 0.1026 - val_mae: 0.0442 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0972 - mae: 0.0341 - val_loss: 0.0072 - val_rmse: 0.0850 - val_mae: 0.0378 - lr: 0.0010 - 2s/epoch - 22ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1020 - mae: 0.0352 - val_loss: 0.0093 - val_rmse: 0.0964 - val_mae: 0.0408 - lr: 1.0000e-04 - 2s/epoch - 21ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0073 - rmse: 0.0855 - mae: 0.0325 - val_loss: 0.0087 - val_rmse: 0.0934 - val_mae: 0.0396 - lr: 1.0000e-04 - 2s/epoch - 21ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1038 - mae: 0.0367 - val_loss: 0.0095 - val_rmse: 0.0973 - val_mae: 0.0416 - lr: 1.0000e-04 - 2s/epoch - 23ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0906 - mae: 0.0342 - val_loss: 0.0105 - val_rmse: 0.1026 - val_mae: 0.0456 - lr: 1.0000e-05 - 2s/epoch - 22ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0072 - rmse: 0.0848 - mae: 0.0317 - val_loss: 0.0121 - val_rmse: 0.1101 - val_mae: 0.0468 - lr: 1.0000e-05 - 2s/epoch - 22ms/step
+1000/1000 - 13s - loss: 0.0214 - rmse: 0.1464 - mae: 0.0709 - 13s/epoch - 13ms/step
+2 10 0.5078042469022768
+2 20 0.7453695857842513
+3 20 0.7500099612646451
+3 40 0.7841911588896009
+4 50 0.7894720773381366
+6 50 0.7917792424399519
+6 60 0.7919249873446175
+7 60 0.7921286543702373
+0.6104694200105367 0.9009530928798355
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0120 - rmse: 0.1097 - mae: 0.0525 - val_loss: 0.0125 - val_rmse: 0.1117 - val_mae: 0.0486 - lr: 0.0010 - 4s/epoch - 44ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0993 - mae: 0.0435 - val_loss: 0.0125 - val_rmse: 0.1117 - val_mae: 0.0478 - lr: 0.0010 - 2s/epoch - 19ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0121 - rmse: 0.1098 - mae: 0.0457 - val_loss: 0.0114 - val_rmse: 0.1068 - val_mae: 0.0456 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1016 - mae: 0.0399 - val_loss: 0.0150 - val_rmse: 0.1226 - val_mae: 0.0490 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0114 - rmse: 0.1067 - mae: 0.0398 - val_loss: 0.0083 - val_rmse: 0.0912 - val_mae: 0.0367 - lr: 0.0010 - 2s/epoch - 22ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0079 - rmse: 0.0890 - mae: 0.0353 - val_loss: 0.0106 - val_rmse: 0.1028 - val_mae: 0.0437 - lr: 0.0010 - 2s/epoch - 22ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0082 - rmse: 0.0906 - mae: 0.0358 - val_loss: 0.0144 - val_rmse: 0.1198 - val_mae: 0.0511 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0062 - rmse: 0.0789 - mae: 0.0335 - val_loss: 0.0101 - val_rmse: 0.1005 - val_mae: 0.0439 - lr: 0.0010 - 2s/epoch - 20ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0092 - rmse: 0.0960 - mae: 0.0366 - val_loss: 0.0098 - val_rmse: 0.0989 - val_mae: 0.0408 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0086 - rmse: 0.0925 - mae: 0.0355 - val_loss: 0.0142 - val_rmse: 0.1193 - val_mae: 0.0501 - lr: 1.0000e-04 - 2s/epoch - 20ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0053 - rmse: 0.0727 - mae: 0.0308 - val_loss: 0.0112 - val_rmse: 0.1058 - val_mae: 0.0430 - lr: 1.0000e-04 - 2s/epoch - 19ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0063 - rmse: 0.0796 - mae: 0.0340 - val_loss: 0.0108 - val_rmse: 0.1041 - val_mae: 0.0449 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0064 - rmse: 0.0801 - mae: 0.0333 - val_loss: 0.0123 - val_rmse: 0.1109 - val_mae: 0.0469 - lr: 1.0000e-05 - 2s/epoch - 20ms/step
+1000/1000 - 12s - loss: 0.0224 - rmse: 0.1497 - mae: 0.0727 - 12s/epoch - 12ms/step
+2 10 0.7818592106073007
+3 20 0.790890944415451
+3 30 0.7956021968497543
+3 40 0.7979250906022658
+4 30 0.7994680372704834
+4 40 0.8004671624890383
+4 50 0.8036917316170978
+5 30 0.8056936488562888
+6 40 0.807202290398294
+0.9243826597607236 0.7525083612040134
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 5s - loss: 0.0140 - rmse: 0.1182 - mae: 0.0554 - val_loss: 0.0115 - val_rmse: 0.1074 - val_mae: 0.0423 - lr: 0.0010 - 5s/epoch - 50ms/step
+Epoch 2/100
+100/100 - 3s - loss: 0.0067 - rmse: 0.0820 - mae: 0.0388 - val_loss: 0.0103 - val_rmse: 0.1015 - val_mae: 0.0374 - lr: 0.0010 - 3s/epoch - 25ms/step
+Epoch 3/100
+100/100 - 3s - loss: 0.0109 - rmse: 0.1045 - mae: 0.0432 - val_loss: 0.0108 - val_rmse: 0.1041 - val_mae: 0.0372 - lr: 0.0010 - 3s/epoch - 26ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0103 - rmse: 0.1015 - mae: 0.0415 - val_loss: 0.0086 - val_rmse: 0.0927 - val_mae: 0.0324 - lr: 0.0010 - 2s/epoch - 21ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0083 - rmse: 0.0911 - mae: 0.0396 - val_loss: 0.0102 - val_rmse: 0.1008 - val_mae: 0.0350 - lr: 0.0010 - 2s/epoch - 23ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0104 - rmse: 0.1018 - mae: 0.0409 - val_loss: 0.0121 - val_rmse: 0.1102 - val_mae: 0.0368 - lr: 0.0010 - 2s/epoch - 23ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0076 - rmse: 0.0873 - mae: 0.0358 - val_loss: 0.0108 - val_rmse: 0.1039 - val_mae: 0.0342 - lr: 0.0010 - 2s/epoch - 23ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0070 - rmse: 0.0835 - mae: 0.0339 - val_loss: 0.0088 - val_rmse: 0.0937 - val_mae: 0.0316 - lr: 1.0000e-04 - 2s/epoch - 23ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0979 - mae: 0.0408 - val_loss: 0.0088 - val_rmse: 0.0939 - val_mae: 0.0313 - lr: 1.0000e-04 - 2s/epoch - 22ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0110 - rmse: 0.1047 - mae: 0.0394 - val_loss: 0.0114 - val_rmse: 0.1067 - val_mae: 0.0333 - lr: 1.0000e-04 - 2s/epoch - 23ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0097 - rmse: 0.0985 - mae: 0.0374 - val_loss: 0.0098 - val_rmse: 0.0991 - val_mae: 0.0325 - lr: 1.0000e-05 - 2s/epoch - 21ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0119 - rmse: 0.1092 - mae: 0.0419 - val_loss: 0.0102 - val_rmse: 0.1008 - val_mae: 0.0331 - lr: 1.0000e-05 - 2s/epoch - 22ms/step
+1000/1000 - 13s - loss: 0.0259 - rmse: 0.1608 - mae: 0.0726 - 13s/epoch - 13ms/step
+2 10 0.7201403044205952
+2 20 0.7272209477989993
+2 30 0.7506215337095267
+2 40 0.7515227258832083
+2 50 0.7580037780890934
+3 40 0.7665697778819653
+0.6373069806023481 0.8313504125054277
+{'model': {'net': 'protonet', 'output_dim': 1, 'output': 'relu', 'nblocks': 2, 'embedding_dim': 64, 'block_size': 1}, 'data': {'dataset_name': 'CURVES', 'dataset_target': 'final_loss', 'low_float_precision': True, 'preprocess': None}, 'train': {'epochs': 100, 'batch_size': 32, 'timeout': 1800, 'ts_len': 100, 'lr': 0.001, 'verbose': True, 'num_folds': 3, 'random_state': 29, 'stop_criteria': False, 'conditioning': None, 'debug': False, 'stride': 0.0}, 'train_generator': {'random_init': False}, 'val_generator': {'random_init': False}, 'log': {'directory': '/tmp', 'save_only_best': True}}
+Dataset CURVES already downloaded and extracted
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Remember to cite the original publisher dataset:
+	@article{solis2025model,
+	  title={A Model for Learning-Curve Estimation in Efficient Neural Architecture Search and Its Application in Predictive Health Maintenance},
+	  author={Sol{\'\i}s-Mart{\'\i}n, David and Gal{\'a}n-P{\'a}ez, Juan and Borrego-D{\'\i}az, Joaqu{\'\i}n},
+	  journal={Mathematics},
+	  volume={13},
+	  number={4},
+	  pages={555},
+	  year={2025},
+	  publisher={Multidisciplinary Digital Publishing Institute}
+	}
+	
+You can download the dataset manually from:  
+
+** If you find this tool useful, please cite our SoftwareX paper: 
+	Solís-Martín, David, Juan Galán-Páez, and Joaquín Borrego-Díaz. "PHMD: An easy data access tool for prognosis and health management datasets." SoftwareX 29 (2025): 102039.
+
+Epoch 1/100
+100/100 - 4s - loss: 0.0144 - rmse: 0.1198 - mae: 0.0499 - val_loss: 0.0104 - val_rmse: 0.1022 - val_mae: 0.0475 - lr: 0.0010 - 4s/epoch - 35ms/step
+Epoch 2/100
+100/100 - 2s - loss: 0.0098 - rmse: 0.0989 - mae: 0.0415 - val_loss: 0.0092 - val_rmse: 0.0960 - val_mae: 0.0435 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 3/100
+100/100 - 2s - loss: 0.0099 - rmse: 0.0993 - mae: 0.0382 - val_loss: 0.0132 - val_rmse: 0.1149 - val_mae: 0.0494 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 4/100
+100/100 - 2s - loss: 0.0108 - rmse: 0.1041 - mae: 0.0401 - val_loss: 0.0104 - val_rmse: 0.1021 - val_mae: 0.0427 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 5/100
+100/100 - 2s - loss: 0.0102 - rmse: 0.1010 - mae: 0.0397 - val_loss: 0.0080 - val_rmse: 0.0894 - val_mae: 0.0374 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 6/100
+100/100 - 2s - loss: 0.0112 - rmse: 0.1059 - mae: 0.0391 - val_loss: 0.0121 - val_rmse: 0.1102 - val_mae: 0.0448 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 7/100
+100/100 - 2s - loss: 0.0090 - rmse: 0.0946 - mae: 0.0349 - val_loss: 0.0110 - val_rmse: 0.1050 - val_mae: 0.0440 - lr: 0.0010 - 2s/epoch - 18ms/step
+Epoch 8/100
+100/100 - 2s - loss: 0.0122 - rmse: 0.1106 - mae: 0.0377 - val_loss: 0.0075 - val_rmse: 0.0865 - val_mae: 0.0363 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 9/100
+100/100 - 2s - loss: 0.0129 - rmse: 0.1137 - mae: 0.0392 - val_loss: 0.0091 - val_rmse: 0.0952 - val_mae: 0.0383 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 10/100
+100/100 - 2s - loss: 0.0094 - rmse: 0.0967 - mae: 0.0358 - val_loss: 0.0085 - val_rmse: 0.0924 - val_mae: 0.0361 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 11/100
+100/100 - 2s - loss: 0.0113 - rmse: 0.1064 - mae: 0.0369 - val_loss: 0.0093 - val_rmse: 0.0965 - val_mae: 0.0377 - lr: 0.0010 - 2s/epoch - 17ms/step
+Epoch 12/100
+100/100 - 2s - loss: 0.0096 - rmse: 0.0980 - mae: 0.0355 - val_loss: 0.0100 - val_rmse: 0.1001 - val_mae: 0.0422 - lr: 1.0000e-04 - 2s/epoch - 17ms/step
+Epoch 13/100
+100/100 - 2s - loss: 0.0095 - rmse: 0.0974 - mae: 0.0328 - val_loss: 0.0113 - val_rmse: 0.1062 - val_mae: 0.0428 - lr: 1.0000e-04 - 2s/epoch - 17ms/step
+Epoch 14/100
+100/100 - 2s - loss: 0.0074 - rmse: 0.0862 - mae: 0.0326 - val_loss: 0.0087 - val_rmse: 0.0935 - val_mae: 0.0377 - lr: 1.0000e-04 - 2s/epoch - 17ms/step
+Epoch 15/100
+100/100 - 2s - loss: 0.0118 - rmse: 0.1088 - mae: 0.0381 - val_loss: 0.0099 - val_rmse: 0.0994 - val_mae: 0.0392 - lr: 1.0000e-05 - 2s/epoch - 17ms/step
+Epoch 16/100
+100/100 - 2s - loss: 0.0101 - rmse: 0.1005 - mae: 0.0351 - val_loss: 0.0098 - val_rmse: 0.0988 - val_mae: 0.0401 - lr: 1.0000e-05 - 2s/epoch - 18ms/step
+1000/1000 - 11s - loss: 0.0211 - rmse: 0.1452 - mae: 0.0697 - 11s/epoch - 11ms/step
