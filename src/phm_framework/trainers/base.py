@@ -143,13 +143,13 @@ class BaseTrainer:
                 start_time = time.time()
                 results = model.fit(context)
 
-                # save csv results
+                # save csv opt_history
                 metric_results['train__time'].append((time.time() - start_time))
                 for k in results.keys():
                     if k.startswith('val'):
                         metric_results[k].append(results[k])
 
-                #csv_config.update({k: results[k][-1] for k in results.keys() if k.startswith('val')})
+                #csv_config.update({k: opt_history[k][-1] for k in opt_history.keys() if k.startswith('val')})
 
                 test_metrics = self.evaluate_test(context)
                 metric_results.update(test_metrics)

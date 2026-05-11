@@ -1,1 +1,1 @@
-from phm_framework.data.generators import Sequence, FSLSequence
+from phm_framework.data.generators import Sequence, FSLSequence, SequenceV2

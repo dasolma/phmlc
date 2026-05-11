@@ -1,16 +1,27 @@
 import argparse
 import logging
+import multiprocessing
 import os, sys
 import itertools
 from phmd import datasets
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from phm_framework.logging import load_log, get_rows
-
+import time
 
 logging.basicConfig(level=logging.INFO)
 logging.info("Working dir: " + os.getcwd())
 
-from phm_framework.optimization.curves.train import curves_train, arima_train, random_train, last_seen, curves_fsl_train
+from phm_framework.optimization.curves.train import (curves_train, arima_train, random_train, last_seen,
+                                                     curves_fsl_train, curves_fsl_train_v2)
+
+sem = multiprocessing.Semaphore(4)  # 👈 Máximo 4 en paralelo
+
+
+def train_with_sem(config):
+    with sem:
+        print("Started training process")
+        train(config)
+        print("Finished training process")
 
 
 def train_loop(lr):
@@ -74,24 +85,20 @@ def train_loop(lr):
 
                 train(config)
 
-    elif args.model in ['protonet']:
+    elif args.model in ['protonet', 'protonetv2']:
         nblocks = [1, 2, 3, 4]
-        embedding_dims = [64, 128, 256]
+        embedding_dims = [16, 32, 64, 128, 256]
         block_sizes = [1, 2, 3]
 
         log = None
         log_path = os.path.join(args.output, 'CURVES/final_loss/protonet/')
         if os.path.exists(os.path.join(log_path, 'train.csv')):
             log = load_log(None, log_path)
+
+        processes = []
         for nblocks, embedding_dim, block_size in itertools.product(nblocks, embedding_dims, block_sizes):
 
-                for ts_len in range(5, 20):
-                    tries = get_rows(log, model__net='protonet', model__nblocks=nblocks,
-                                     model__embedding_dim=embedding_dim, model__block_size=block_size,
-                                     train__ts_len=ts_len)
-                    tries = 0
-                    if tries > 0:
-                        continue
+                for ts_len in range(5, 21, 5):
 
                     config = {
                         'model': {
@@ -141,7 +148,15 @@ def train_loop(lr):
                         'train__stride': 0.,
                     }
 
-                    train(config)
+
+                    p = multiprocessing.Process(target=train_with_sem, args=(config,))
+                    p.start()
+                    processes.append(p)
+                    time.sleep(5)
+
+                    #train(config)
+        for p in processes:
+            p.join()
 
     elif args.model == 'arima':
 
@@ -334,19 +349,40 @@ if __name__ == "__main__":
             )
 
         else:
-            creator = get_model_creator()
-
-            return phm_framework.optimization.utils.parameter_opt_cv(
-                creator,
-                config,
-                trainer=curves_fsl_train if args.model == 'protonet' else curves_train,
-                debug=args.debug
-            )
 
 
-    def get_model_creator():
+            trainer = curves_train
+            if args.model == 'protonet':
+                trainer = curves_fsl_train
+                creator = get_model_creator('protonet')
+
+                return phm_framework.optimization.utils.parameter_opt_cv(
+                    creator,
+                    config,
+                    trainer=trainer,
+                    debug=args.debug
+                )
+
+            elif args.model == 'protonetv2':
+                trainer = curves_fsl_train_v2
+                config['model']['net'] = 'protonet'
+                creator = get_model_creator('protonet')
+
+                return phm_framework.optimization.utils.parameter_opt_cv_v2(
+                    creator,
+                    config,
+                    trainer=trainer,
+                    debug=args.debug
+                )
+
+
+
+
+
+
+    def get_model_creator(net=None):
         net_creator_func = f"create_model"
-        net_module = getattr(getattr(phm_framework, 'models'), args.model)
+        net_module = getattr(getattr(phm_framework, 'models'), net or args.model)
         creator = getattr(net_module, net_creator_func)
 
         return creator
@@ -364,7 +400,7 @@ if __name__ == "__main__":
 
     else:
 
-        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet']
+        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2']
         if isnet(args.model):
             random_states = [29, 8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444]
 

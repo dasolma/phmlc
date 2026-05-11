@@ -11,7 +11,6 @@ Prototypical Network: Protonet
     3 - The distance between a query embedding and a prototype is measured using Euclidean distance
 '''
 
-
 EXTRA_CHANNEL = True
 
 
@@ -143,7 +142,7 @@ class WDCNNProtonet(tf.keras.Model):
         # Uso de los nuevos pesos acentuados
         preds = tf.reduce_sum(SY * w_accentuated, axis=-1)
 
-        #preds = tf.reduce_sum(SY * w, axis=-1)
+        # preds = tf.reduce_sum(SY * w, axis=-1)
 
         return preds
 
@@ -153,8 +152,8 @@ class WDCNNProtonet(tf.keras.Model):
         # Data encoding: vector representations in the embedding space:
         Qe = self.encoder(Q)
 
-        #Sprime = tf.reshape(S, (tf.shape(S)[0] * tf.shape(S)[1], tf.shape(S)[2], tf.shape(S)[3]))
-        #Se = self.encoder(Sprime)  # Support set embeddings
+        # Sprime = tf.reshape(S, (tf.shape(S)[0] * tf.shape(S)[1], tf.shape(S)[2], tf.shape(S)[3]))
+        # Se = self.encoder(Sprime)  # Support set embeddings
 
         Se = self.encoder(S)
 
@@ -174,13 +173,12 @@ def create_model(input_shape, output_dim: int,
                  filters: int = 16,
                  l1: float = 0,
                  l2: float = 0,
-                 distance = 'l2',
-                 conv_activation = tf.keras.layers.ReLU(),
+                 distance='l2',
+                 conv_activation=tf.keras.layers.ReLU(),
                  base_model=None,
                  batch_normalization: bool = True):
     if base_model is not None:
         base_model, space_dims = base_model
 
     return WDCNNProtonet(input_shape, filters, batch_normalization, conv_activation, l1, l2, nblocks, block_size,
-                         output_dim,
-                         embedding_dim, distance, base_model)
+                         output_dim, embedding_dim, distance, base_model)

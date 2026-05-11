@@ -79,11 +79,6 @@ def create_encoder(input_shape, filters, batch_normalization, conv_activation, l
     input_tensor = tf.keras.layers.Input(input_shape)
     x = input_tensor
 
-    # WDCNN
-    #x = tf.keras.layers.Conv1D(filters=filters, kernel_size=64, strides=16, activation='relu', padding='same',
-    #                           input_shape=input_shape, name="encoder_conv_1")(input_tensor)
-    #x = tf.keras.layers.Activation(conv_activation)(x)
-    #x = tf.keras.layers.MaxPooling1D(strides=2, name=f"encoder_maxpool_1")(x)
     for i in range(nblocks):
         filters = min(64, filters * 2)
         strides = 2 if i == 0 else 1
