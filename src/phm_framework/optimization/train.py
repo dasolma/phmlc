@@ -4,6 +4,9 @@ import multiprocessing
 import os, sys
 import itertools
 from phmd import datasets
+
+from phm_framework.optimization.curves.hyperband import hyperband_simulation
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from phm_framework.logging import load_log, get_rows
 import time
@@ -157,6 +160,72 @@ def train_loop(lr):
                     #train(config)
         for p in processes:
             p.join()
+
+    elif args.model in ['hb']:
+
+        log = None
+        log_path = os.path.join(args.output, 'CURVES/final_loss/hb/')
+        if os.path.exists(os.path.join(log_path, 'train.csv')):
+            log = load_log(None, log_path)
+
+        processes = []
+
+        for ts_len in range(5, 21, 5):
+
+            config = {
+                'model': {
+                    'net': args.model,
+                    'output_dim': hp.get_output_dim(task),
+                    'output': "relu",
+                },
+
+                'data': {
+                    'dataset_name': dataset,
+                    'dataset_target': task_name,
+                    'low_float_precision': True,
+                    'preprocess': None,
+                },
+
+                'train': {
+                    'epochs': 1 if args.debug else 100,
+                    'batch_size': 32,
+                    'timeout': 60 * 30,
+                    'ts_len': 9 if args.debug else ts_len,
+                    'lr': lr,
+                    'verbose': True,
+                    'num_folds': min(5, max_folds),
+                    'random_state': random_state,
+                    'debug': args.debug,
+                    'use_current_train_curves': True,
+                },
+
+                'train_generator': {
+                    'random_init': False,
+                },
+
+                'val_generator': {
+                    'random_init': False,
+                },
+
+                'log': {
+                    'directory': args.output,
+                    'save_only_best': True
+                },
+
+            }
+
+
+            p = multiprocessing.Process(target=train_with_sem, args=(config,))
+            p.start()
+            processes.append(p)
+            time.sleep(5)
+
+            #train(config)
+
+        for p in processes:
+            p.join()
+
+
 
     elif args.model == 'arima':
 
@@ -348,32 +417,36 @@ if __name__ == "__main__":
                 debug=args.debug,
             )
 
-        else:
-
-
-            trainer = curves_train
-            if args.model == 'protonet':
-                trainer = curves_fsl_train
+        elif args.model == 'protonet':
                 creator = get_model_creator('protonet')
 
                 return phm_framework.optimization.utils.parameter_opt_cv(
                     creator,
                     config,
-                    trainer=trainer,
+                    trainer=curves_fsl_train,
                     debug=args.debug
                 )
 
-            elif args.model == 'protonetv2':
-                trainer = curves_fsl_train_v2
-                config['model']['net'] = 'protonet'
-                creator = get_model_creator('protonet')
+        elif args.model == 'protonetv2':
+            config['model']['net'] = 'protonet'
+            creator = get_model_creator('protonet')
 
-                return phm_framework.optimization.utils.parameter_opt_cv_v2(
-                    creator,
-                    config,
-                    trainer=trainer,
-                    debug=args.debug
-                )
+            return phm_framework.optimization.utils.parameter_opt_cv_v2(
+                creator,
+                config,
+                trainer=curves_fsl_train_v2,
+                debug=args.debug
+            )
+
+        elif args.model == 'hb':
+            config['model']['net'] = 'hb'
+
+            return phm_framework.optimization.utils.parameter_opt_cv_hb(
+                None,
+                config,
+                trainer=hyperband_simulation,
+                debug=args.debug
+            )
 
 
 
@@ -400,7 +473,7 @@ if __name__ == "__main__":
 
     else:
 
-        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2']
+        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'hb']
         if isnet(args.model):
             random_states = [29, 8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444]
 

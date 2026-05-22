@@ -77,6 +77,8 @@ def get_results(net_hash, directory):
 
 
 def load_log(net_name, directory):
+    if not os.path.exists(os.path.join(directory, 'train.csv')):
+        return False
     log_file = os.path.join(directory, f'train.csv')
 
     return pd.read_csv(log_file)
