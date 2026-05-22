@@ -192,7 +192,6 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
 
     try:
         training_config = config['train']
-        random_state = training_config['random_state']
         data_config     = config['data']
 
         data_name   = data_config['dataset_name']
@@ -225,6 +224,13 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
                            num_folds=config['train']['num_folds'],
                            normalize_output=False,
                            filters={"data": "curves"},
+                           test_dataset_names=config['data']['test_dataset_names'],
+                           random_state=random_state)
+
+        hp_sets  = load_curves(ifold,
+                           num_folds=config['train']['num_folds'],
+                           normalize_output=False,
+                           filters={"data": "results"},
                            test_dataset_names=config['data']['test_dataset_names'],
                            random_state=random_state)
 

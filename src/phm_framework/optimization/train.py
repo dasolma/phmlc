@@ -5,6 +5,7 @@ import os, sys
 import itertools
 from phmd import datasets
 
+from phm_framework.optimization.curves.bohb import bohb_simulation
 from phm_framework.optimization.curves.hyperband import hyperband_simulation
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
@@ -161,7 +162,7 @@ def train_loop(lr):
         for p in processes:
             p.join()
 
-    elif args.model in ['hb']:
+    elif args.model in ['hb', 'bohb']:
 
         log = None
         log_path = os.path.join(args.output, 'CURVES/final_loss/hb/')
@@ -448,9 +449,15 @@ if __name__ == "__main__":
                 debug=args.debug
             )
 
+        elif args.model == 'bohb':
+            config['model']['net'] = 'bohb'
 
-
-
+            return phm_framework.optimization.utils.parameter_opt_cv_hb(
+                None,
+                config,
+                trainer=bohb_simulation,
+                debug=args.debug
+            )
 
 
     def get_model_creator(net=None):
@@ -473,7 +480,7 @@ if __name__ == "__main__":
 
     else:
 
-        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'hb']
+        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'hb', 'bohb']
         if isnet(args.model):
             random_states = [29, 8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444]
 
