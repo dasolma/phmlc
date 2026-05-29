@@ -4,11 +4,13 @@ import traceback
 import warnings
 import os
 import pandas as pd
+import numpy as np
 from phm_framework.logging import confighash, HASH_EXCLUDE, load_log, secure_decode, log_train
 from phm_framework.optimization.curves import load_curves
 from phm_framework.trainers.utils import get_task
 from phm_framework.utils import flat_dict
 import logging
+from joblib import Parallel, delayed
 
 
 # Desactivar logs de Optuna para no ensuciar tu consola
@@ -49,16 +51,41 @@ class BOHBSimulator:
         # para agilizar la búsqueda del vecino más cercano.
         self.param_df = pd.DataFrame.from_dict(unit_params, orient='index')
 
+        self.__categorical_params = ['model__activation', 'model__batch_normalization', 'model__conv_activation',
+                              'model__dense_activation']
+
+        params = list(self.unit_params.values())[0].keys()
+        self.params_ranges = {}
+        for k in params:
+            values = np.array([d[k] for d in self.unit_params.values()])
+            if k in self.__categorical_params:
+                self.params_ranges[k] = np.unique(values)
+            else:
+                self.params_ranges[k] = (values.min(), values.max())
+
+        # ══════ OPTIMIZACIÓN NUMPY ══════
+        self.param_df = pd.DataFrame.from_dict(unit_params, orient='index')
+        # Guardamos las columnas numéricas para el cálculo de distancia
+        self.numeric_cols = self.param_df.select_dtypes(include=[np.number]).columns.tolist()
+
+        # Convertimos a matrices NumPy nativas (búsqueda ultra rápida)
+        self.matrix_uids = self.param_df.index.to_numpy()
+        self.matrix_values = self.param_df[self.numeric_cols].to_numpy()
+
     @classmethod
     def from_group(
             cls,
             group_df: pd.DataFrame,
-            unit_params_dict: dict,
+            unit_params_dict: dict,  # El diccionario global {unit_id: {hp1: v1, ...}}
             R: int = None,
             eta: int = 3,
             minimize: bool = True,
     ) -> "BOHBSimulator":
-        """Construye el simulador BOHB desde un subDataFrame."""
+        """
+        Construye un simulador BOHB desde el subDataFrame de un grupo.
+        Filtra automáticamente los parámetros para quedarse SOLO con las 'units' de este grupo.
+        """
+        # 1. Extraer las curvas de validación de este grupo específico
         val_curves = (
             group_df
             .sort_index()
@@ -66,9 +93,77 @@ class BOHBSimulator:
             .apply(list)
             .to_dict()
         )
-        return cls(val_curves, unit_params_dict, R=R, eta=eta, minimize=minimize)
 
-    # ── ranking (Igual que en tu código) ──────────────────────────────────────
+        # 2. FILTRADO CRUCIAL: Nos quedamos solo con los parámetros de las units de ESTE grupo
+        group_units = set(val_curves.keys())
+        filtered_params = {
+            uid: unit_params_dict[uid]
+            for uid in group_units
+            if uid in unit_params_dict
+        }
+
+        # Control de errores por si alguna unidad no tiene sus hiperparámetros registrados
+        missing = group_units - set(filtered_params.keys())
+        if missing:
+            filtered_params = {k: v for k, v in filtered_params.items() if k not in missing}
+            group_units = list(filtered_params.keys())
+            val_curves = {k: v for k, v in val_curves.items() if k in group_units}
+
+        # 3. Inicializamos la clase pasándole únicamente el set de datos de este grupo
+        return cls(val_curves, filtered_params, R=R, eta=eta, minimize=minimize)
+
+    @classmethod
+    def run_all_groups(
+            cls,
+            df: pd.DataFrame,
+            unit_params_dict: dict,
+            group_cols: list = None,
+            R: int = None,
+            eta: int = 3,
+            minimize: bool = True,
+            n_runs: int = 20,
+            n_trials: int = 100,  # <-- El budget de trials para Optuna por cada run
+            seed: int = 42,
+            n_jobs: int = -1,
+    ) -> pd.DataFrame:
+
+        group_cols = group_cols or ["dataset", "task", "net"]
+        grouped = list(df.groupby(group_cols, sort=True))
+
+        # Definimos una función interna para procesar UN SOLO GRUPO de forma aislada
+        def _process_single_group(keys, group_df):
+            key_dict = dict(zip(group_cols, keys if isinstance(keys, tuple) else (keys,)))
+            try:
+                sim = cls.from_group(group_df, unit_params_dict, R=R, eta=eta, minimize=minimize)
+                mc_results = sim.run_montecarlo(n_runs=n_runs, n_trials=n_trials, seed=seed)
+                mc_results = sim.enrich_results(mc_results)
+
+                for col, val in key_dict.items():
+                    mc_results[col] = val
+                return mc_results
+            except Exception as exc:
+                print(f"[BOHBSimulator] Grupo {key_dict} omitido: {exc}")
+                return None
+
+        # ══════ EJECUCIÓN EN PARALELO ══════
+        # Distribuye los grupos automáticamente entre tus cores de la CPU
+        results_list = Parallel(n_jobs=n_jobs)(
+            delayed(_process_single_group)(keys, group_df) for keys, group_df in grouped
+        )
+
+        # Filtrar los omitidos (None) y concatenar
+        records = [r for r in results_list if r is not None]
+
+        if not records:
+            raise RuntimeError("Ningún grupo pudo simularse.")
+
+        col_order = group_cols + [
+            "run", "best_unit", "best_val_loss",
+            "rank", "rank_pct", "epochs_used",
+            "epochs_saved", "val_score"
+        ]
+        result = pd.concat(records, ignore_index=True)
+        return result[[c for c in col_order if c in result.columns]]
 
     def _unit_final_score(self, uid) -> float:
         return float(self.val_curves[uid][-1])
@@ -95,16 +190,18 @@ class BOHBSimulator:
         Si tu espacio en Optuna es exactamente igual al grid de tus datos,
         esto encontrará una coincidencia exacta.
         """
-        # Búsqueda exacta rápida
+        # 1. Intentar coincidencia exacta rápida via diccionario
+        # (Si tu espacio de búsqueda coincide con tu grid, esto toma tiempo O(1))
         for uid, params in self.unit_params.items():
             if all(params.get(k) == v for k, v in suggested_params.items()):
                 return uid
 
-        # Si el TPE sugiere valores continuos, calculamos la distancia euclídea
-        # (Asegúrate de normalizar si tienes escalas muy distintas en tu dataset real)
-        diffs = self.param_df - pd.Series(suggested_params)
-        distances = (diffs ** 2).sum(axis=1)
-        return distances.idxmin()
+        # 2. Si no hay coincidencia exacta, distancia Euclídea vectorizada en NumPy
+        suggested_vector = np.array([suggested_params[col] for col in self.numeric_cols])
+
+        # Operación matricial broadcasting en C (mucho más rápido que Pandas)
+        distances = np.sum((self.matrix_values - suggested_vector) ** 2, axis=1)
+        return self.matrix_uids[np.argmin(distances)]
 
     def run_once(self, n_trials=50, seed=42):
         """
@@ -122,37 +219,53 @@ class BOHBSimulator:
         study = optuna.create_study(direction=direction, sampler=sampler, pruner=pruner)
 
         epochs_used = 0
-        sampled_units_all = set()
+        baseline_epochs = 0
+        real_best_score = np.inf
+        sampled_units_all = list()
+        # ══════ OPTIMIZACIÓN DE RUNGS ══════
+        # Pre-calcular las épocas exactas donde Hyperband toma decisiones: 1, eta, eta^2, eta^3...
+        rungs = set()
+        curr_rung = 1
+        while curr_rung <= self.R:
+            rungs.add(curr_rung)
+            curr_rung *= self.eta
 
         def objective(trial):
-            nonlocal epochs_used
+            nonlocal epochs_used, baseline_epochs, real_best_score
 
-            # 1. BOHB sugiere hiperparámetros
-            # ¡IMPORTANTE!: Ajusta este bloque según los verdaderos hiperparámetros de tus datos
-            suggested = {
-                'lr': trial.suggest_float('lr', 1e-5, 1e-1, log=True),
-                # 'batch_size': trial.suggest_categorical('batch_size',),
-                # Añade aquí los mismos que definen tus 'unit_params'
-            }
+            suggested = {}
+            for k, v in self.params_ranges.items():
+                if k in self.__categorical_params:
+                    suggested[k] = trial.suggest_categorical(k, v)
+                else:
+                    suggested[k] = trial.suggest_float(k, v[0], v[1], log=v[0] != 0)
 
-            # 2. Buscamos la curva histórica correspondiente
             uid = self._find_closest_unit(suggested)
-            sampled_units_all.add(uid)
+            sampled_units_all.append(uid)
             curve = self.val_curves[uid]
 
-            # 3. Simulamos el entrenamiento época a época para que el Pruner actúe
+            baseline_epochs += len(curve)
+
             last_val_loss = None
-            for epoch_idx in range(min(self.R, len(curve))):
+            max_steps = min(self.R, len(curve))
+
+            for epoch_idx in range(max_steps):
                 step = epoch_idx + 1
                 val_loss = curve[epoch_idx]
                 last_val_loss = val_loss
-
                 epochs_used += 1
+
+                # Reportamos la métrica a Optuna obligatoriamente
                 trial.report(val_loss, step)
 
-                # Successive Halving en acción: corta el entrenamiento si es malo
-                if trial.should_prune():
-                    raise optuna.TrialPruned()
+                # ══════ LLAMADA FILTRADA A LA PODA ══════
+                # Solo preguntamos a Optuna si debe podar si estamos en un Rung o en la última época
+                if step in rungs or step == max_steps:
+                    if trial.should_prune():
+                        raise optuna.TrialPruned()
+
+            if real_best_score > curve[-1]:
+                real_best_score = curve[-1]
 
             return last_val_loss
 
@@ -172,18 +285,30 @@ class BOHBSimulator:
 
         baseline_epochs = sum(len(self.val_curves[u]) for u in sampled_units_all)
 
-        return best_uid, best_score, epochs_used, baseline_epochs
+        rank = sorted([np.array(self.val_curves[u]).min() for u in sampled_units_all])
+        rank = [r >= best_score for r in rank].index(True)
+        print(f"Best uid {best_uid}, Best score: {best_score}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
+
+        performance_score = real_best_score / best_score
+
+        total_epochs = baseline_epochs + epochs_used
+        time_score = (epochs_used / total_epochs)
+
+        score = (0.5 * performance_score + 0.5 * time_score)
+
+        return best_uid, best_score, epochs_used, baseline_epochs, score
 
     def run_montecarlo(self, n_runs=20, n_trials=50, seed=42):
         results = []
         for i in range(n_runs):
-            uid, score, ep, baseline = self.run_once(n_trials=n_trials, seed=seed + i)
+            uid, val_loss, ep, baseline, val_score = self.run_once(n_trials=n_trials, seed=seed + i)
             results.append({
                 "run": i,
                 "best_unit": uid,
-                "best_val_loss": score,
+                "best_val_loss": val_loss,
                 "epochs_used": ep,
                 "baseline_epochs": baseline,
+                "val_score": val_score,
             })
         return pd.DataFrame(results)
 
@@ -227,20 +352,24 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
                            test_dataset_names=config['data']['test_dataset_names'],
                            random_state=random_state)
 
-        hp_sets  = load_curves(ifold,
-                           num_folds=config['train']['num_folds'],
-                           normalize_output=False,
-                           filters={"data": "results"},
-                           test_dataset_names=config['data']['test_dataset_names'],
-                           random_state=random_state)
-
         fold_train = sets['train']
         fold_val = sets['val']
         train_df = pd.concat((fold_train, fold_val))
         test_df  = sets['test']
 
+
+        hp_set  = load_curves(None,
+                           num_folds=0,
+                           normalize_output=False,
+                           filters={"data": "results"},
+                           test_dataset_names=None,
+                           random_state=random_state)
+
+        # 1. Identificas las columnas que representan tus hiperparámetros (ej: lr, batch_size, dropout...)
+        # Si tus columnas de hiperparámetros no tienen prefijo, puedes listarlas explícitamente:
+        unit_params_dict = create_unit_params_dict(fold_train.unit, hp_set)
+
         group_cols  = ["dataset", "task", "net"]
-        R_grid      = training_config.get('hyperband_R_grid',   [9, 27, 81])
         eta_grid    = training_config.get('hyperband_eta_grid', [2, 3])
         n_runs      = training_config.get('hyperband_n_runs',   30)
         hb_seed     = training_config.get('hyperband_seed',     42)
@@ -254,12 +383,13 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
 
             results = BOHBSimulator.run_all_groups(
                 fold_train,
+                unit_params_dict=unit_params_dict,
                 group_cols=group_cols,
                 R=R, eta=eta,
                 n_runs=n_runs,
                 seed=hb_seed,
             )
-            mean_rp = results["rank_pct"].mean()
+            mean_rp = results["val_score"].mean()
             if best is None or mean_rp < best["rank_pct"]:
                 best = {"R": R, "eta": eta, "rank_pct": mean_rp}
 
@@ -273,16 +403,22 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
         # ── paso 2: Hyperband sobre train completo con los mejores params ─────
         logging.info("Hyperband: running on full train set")
 
+        unit_params_dict = create_unit_params_dict(train_df.unit, hp_set)
         train_results = BOHBSimulator.run_all_groups(
-            train_df, group_cols=group_cols,
+            train_df,
+            unit_params_dict=unit_params_dict,
+            group_cols=group_cols,
             R=best_R, eta=best_eta, n_runs=n_runs, seed=hb_seed,
         )
 
         # ── paso 3: evaluación del ganador en test ────────────────────────────
         logging.info("Hyperband: running on test set with best params")
 
+        unit_params_dict = create_unit_params_dict(test_df.unit, hp_set)
         test_results = BOHBSimulator.run_all_groups(
-            test_df, group_cols=group_cols,
+            test_df,
+            unit_params_dict=unit_params_dict,
+            group_cols=group_cols,
             R=best_R, eta=best_eta, n_runs=n_runs, seed=hb_seed,
         )
 
@@ -292,9 +428,13 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
                     test_results["epochs_saved"] + test_results["epochs_used"])).mean()
         mean_test_val_loss = test_results["best_val_loss"].mean()
         mean_test_rank_pct = test_results["rank_pct"].mean()
+        mean_test_val_score = test_results["val_score"].mean()
+
         test_mean_rank = test_results['rank'].mean()
         mean_train_saved_pct = (train_results["epochs_saved"] / (train_results["epochs_saved"] + train_results["epochs_used"])).mean()
         mean_train_rank_pct = train_results["rank_pct"].mean()
+        mean_train_val_score = train_results["val_score"].mean()
+
         mean_epochs_saved = train_results["epochs_saved"].mean()
         train_mean_rank = train_results['rank'].mean()
 
@@ -312,6 +452,8 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
             "epochs_saved": mean_epochs_saved,
             "test_epochs_saved_pct": mean_test_saved_pct,
             "train_epochs_saved_pct": mean_train_saved_pct,
+            "mean_test_val_score": mean_test_val_score,
+            "mean_train_val_score": mean_train_val_score,
             "test_mean_rank": test_mean_rank,
             "train_mean_rank": train_mean_rank,
             "random_state": random_state
@@ -333,3 +475,17 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
         queue.put(None)
         log_train(csv_config, directory)
 
+
+def create_unit_params_dict(units, X):
+    X = X[X.unit.isin(units)]
+
+    hp_cols = [c for c in X.columns if 'model__' in c]
+    # 2. Creas el diccionario global mapeando cada 'unit' con sus valores de hiperparámetros
+    unit_params_dict = X.groupby('unit')[hp_cols].first().to_dict('index')
+    unit_params_dict = {u: {hp: v for hp, v in hps.items() if str(v) != 'nan' and v is not None}
+                        for u, hps in unit_params_dict.items()}
+    unit_params_dict = {u: {hp: v for hp, v in hps.items() if
+                            hp not in ['model__input_shape', 'model__output', 'model__net', 'model__output_dim']}
+                        for u, hps in unit_params_dict.items()}
+
+    return unit_params_dict

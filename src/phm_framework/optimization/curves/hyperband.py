@@ -18,7 +18,7 @@ import math
 import random
 import pandas as pd
 from collections import defaultdict
-
+import numpy as np
 
 class HyperbandSimulator:
     """
@@ -61,6 +61,7 @@ class HyperbandSimulator:
             raise ValueError("val_curves está vacío; el grupo no tiene datos.")
 
         self.val_curves = val_curves
+        self.best_score = np.array([c[-1] for c in val_curves.values()]).min()
         self.all_units  = list(val_curves.keys())
         self.R          = R or int(max(len(c) for c in val_curves.values()))
         self.eta        = eta
@@ -137,7 +138,7 @@ class HyperbandSimulator:
 
         col_order = group_cols + [
             "run", "best_unit", "best_val_loss",
-            "rank", "rank_pct",
+            "rank", "rank_pct", "val_score",
             "epochs_used", "epochs_saved",
         ]
         result = pd.concat(records, ignore_index=True)
@@ -265,18 +266,25 @@ class HyperbandSimulator:
         # baseline: entrenar hasta el final todos los units muestreados
         baseline_epochs = sum(len(self.val_curves[u]) for u in sampled_units_all)
 
-        return global_best_uid, global_best_score, total_epochs, baseline_epochs
+        performance_score = self.best_score / global_best_score
+
+        time_score = (total_epochs / baseline_epochs)
+
+        score = (0.5 * performance_score + 0.5 * time_score)
+
+        return global_best_uid, global_best_score, total_epochs, baseline_epochs, score
 
     def run_montecarlo(self, n_runs=20, seed=42):
         return pd.DataFrame([
             {
                 "run": i,
                 "best_unit": uid,
-                "best_val_loss": score,
+                "best_val_loss": best_val_loss,
+                "val_score": val_score,
                 "epochs_used": ep,
                 "baseline_epochs": baseline,  # ← nuevo
             }
-            for i, (uid, score, ep, baseline) in enumerate(
+            for i, (uid, best_val_loss, ep, baseline, val_score) in enumerate(
                 self.run_once(seed + i) for i in range(n_runs)
             )
         ])
@@ -348,16 +356,16 @@ def hyperband_simulation(config, ifold, queue, debug, directory, timeout):
                 fold_train, group_cols=group_cols, R=R, eta=eta,
                 n_runs=n_runs, seed=hb_seed,
             )
-            mean_rp = results["rank_pct"].mean()
-            if best is None or mean_rp < best["rank_pct"]:
-                best = {"R": R, "eta": eta, "rank_pct": mean_rp}
+            mean_rp = results["val_score"].mean()
+            if best is None or mean_rp < best["val_score"]:
+                best = {"R": R, "eta": eta, "val_score": mean_rp}
 
                 print(best)
 
         best_R   = best['R']
         best_eta = best['eta']
         logging.info(f"Best params → R={best_R}, eta={best_eta} "
-                     f"(mean_rank_pct={best['rank_pct']:.3f})")
+                     f"(val_score={best['val_score']:.3f})")
 
         # ── paso 2: Hyperband sobre train completo con los mejores params ─────
         logging.info("Hyperband: running on full train set")
@@ -381,9 +389,14 @@ def hyperband_simulation(config, ifold, queue, debug, directory, timeout):
                     test_results["epochs_saved"] + test_results["epochs_used"])).mean()
         mean_test_val_loss = test_results["best_val_loss"].mean()
         mean_test_rank_pct = test_results["rank_pct"].mean()
+        mean_test_val_score = test_results["val_score"].mean()
+
         test_mean_rank = test_results['rank'].mean()
-        mean_train_saved_pct = (train_results["epochs_saved"] / (train_results["epochs_saved"] + train_results["epochs_used"])).mean()
+        mean_train_saved_pct = (train_results["epochs_saved"] / (
+                train_results["epochs_saved"] + train_results["epochs_used"])).mean()
         mean_train_rank_pct = train_results["rank_pct"].mean()
+        mean_train_val_score = train_results["val_score"].mean()
+
         mean_epochs_saved = train_results["epochs_saved"].mean()
         train_mean_rank = train_results['rank'].mean()
 
@@ -401,6 +414,8 @@ def hyperband_simulation(config, ifold, queue, debug, directory, timeout):
             "epochs_saved": mean_epochs_saved,
             "test_epochs_saved_pct": mean_test_saved_pct,
             "train_epochs_saved_pct": mean_train_saved_pct,
+            "mean_test_val_score": mean_test_val_score,
+            "mean_train_val_score": mean_train_val_score,
             "test_mean_rank": test_mean_rank,
             "train_mean_rank": train_mean_rank,
             "random_state": random_state

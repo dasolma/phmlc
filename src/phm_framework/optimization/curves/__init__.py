@@ -2,6 +2,7 @@ from phmd import datasets
 import numpy as np
 from sklearn.model_selection import KFold
 import random
+import phm_framework as phmf
 
 def load_curves(fold: int, num_folds: int = 5, normalize_output=False, filters=None, random_state=666,
                           test_dataset_names=[]):
@@ -60,13 +61,44 @@ def load_curves(fold: int, num_folds: int = 5, normalize_output=False, filters=N
 
     # load
     X = task.load()[0]
-    X.loc[X.train_loss > 8, 'train_loss'] = 8.0
-    X['max_train_loss'] = X.groupby(['unit', 'dataset', 'task', 'net'])['val_loss'].transform('max')
-    X['train_loss'] =  X['train_loss'] / X['max_train_loss']
-    X.loc[X.train_loss > 1, 'train_loss'] = 1.0
-    X['val_loss'] = X['val_loss'] / X['max_train_loss']
-    del X['max_train_loss']
-    X['num_epochs'] = X['num_epochs'] / 100
+
+    if 'train_loss' in X.columns:
+        X.loc[X.train_loss > 8, 'train_loss'] = 8.0
+        X['max_train_loss'] = X.groupby(['unit', 'dataset', 'task', 'net'])['val_loss'].transform('max')
+        X['train_loss'] =  X['train_loss'] / X['max_train_loss']
+        X.loc[X.train_loss > 1, 'train_loss'] = 1.0
+        X['val_loss'] = X['val_loss'] / X['max_train_loss']
+        del X['max_train_loss']
+        X['num_epochs'] = X['num_epochs'] / 100
+    else:
+        activations = [a if isinstance(a, str) else a.__class__.__name__ for a in phmf.typing.ACTIVATIONS]
+        rnn_cells = [a.__name__ for a in phmf.typing.RNN_CELLS]
+
+        def get_code(x, elements):
+            x = str(x)
+            for i, a in enumerate(elements):
+                if a in x:
+                    return i
+
+            return float(x)
+
+        X['model__activation'] = X['model__activation'].map(
+            lambda x: x if x is np.nan else round(get_code(x, activations)))
+        X['model__dense_activation'] = X['model__dense_activation'].map(
+            lambda x: x if x is np.nan else round(get_code(x, activations)))
+        X['model__conv_activation'] = X['model__conv_activation'].map(
+            lambda x: x if x is np.nan else round(get_code(x, activations)))
+        X['model__cell_type'] = X['model__cell_type'].map(
+            lambda x: x if x is np.nan else round(get_code(x, rnn_cells)))
+        X['model__kernel_size'] = X['model__kernel_size'].map(
+            lambda x: (x if x is np.nan else float(x)) if '(' not in str(x) else eval(x)[0] + eval(x)[1] / 100)
+        X['model__batch_normalization'] = X['model__batch_normalization'].map(
+            lambda x: x if x is np.nan else round(float(eval(str(x)))))
+        X['model__bidirectional'] = X['model__bidirectional'].map(
+            lambda x: x if x is np.nan else round(float(eval(str(x)))))
+
+    if num_folds == 0:
+        return X
 
     # split
     dataset_names = X.dataset.unique()
