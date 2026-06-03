@@ -12,7 +12,6 @@ import itertools
 from phmd import datasets
 from phm_framework.optimization.curves.bohb import bohb_simulation
 from phm_framework.optimization.curves.hyperband import hyperband_simulation
-
 from phm_framework.logging import load_log, get_rows
 import time
 

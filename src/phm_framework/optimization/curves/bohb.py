@@ -294,6 +294,7 @@ class BOHBSimulator:
         total_epochs = baseline_epochs + epochs_used
         time_score = (epochs_used / total_epochs)          # lower is better
 
+
         score = (0.5 * performance_score + 0.5 * time_score)
 
         return best_uid, best_score, epochs_used, baseline_epochs, score
@@ -434,7 +435,6 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
         mean_train_saved_pct = (train_results["epochs_saved"] / (train_results["epochs_saved"] + train_results["epochs_used"])).mean()
         mean_train_rank_pct = train_results["rank_pct"].mean()
         mean_train_val_score = train_results["val_score"].mean()
-
         mean_epochs_saved = train_results["epochs_saved"].mean()
         train_mean_rank = train_results['rank'].mean()
 
