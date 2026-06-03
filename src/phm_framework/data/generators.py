@@ -601,7 +601,7 @@ def load_train_net_generators_v2(dataset_name: str, task_name, fold: int, num_fo
     _sets['train'] = X[X.dataset.isin(dataset_names[train_idx])]
     _sets['val'] = X[X.dataset.isin(dataset_names[val_idx])]
     # todo: eliminar [:x]
-    test_datasetnames = list(filter(lambda n:  n not in dataset_names, X.dataset.unique()))[:3]
+    test_datasetnames = list(filter(lambda n:  n not in dataset_names, X.dataset.unique()))
     _sets['test'] = X[X.dataset.isin(test_datasetnames)]
 
     logging.info(f"Test shape: {_sets['test'].shape}")

@@ -289,10 +289,10 @@ class BOHBSimulator:
         rank = [r >= best_score for r in rank].index(True)
         print(f"Best uid {best_uid}, Best score: {best_score}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
 
-        performance_score = real_best_score / best_score
+        performance_score = real_best_score / best_score  # lower is better
 
         total_epochs = baseline_epochs + epochs_used
-        time_score = (epochs_used / total_epochs)
+        time_score = (epochs_used / total_epochs)          # lower is better
 
         score = (0.5 * performance_score + 0.5 * time_score)
 

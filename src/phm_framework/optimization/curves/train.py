@@ -1333,6 +1333,118 @@ def get_curve_predictions_reusing(model, support_gen, ts_len, data_gen, opt_hist
     return data
 
 
+def get_curve_predictions_reusing(model, support_gen, ts_len, data_gen, opt_history, debug=False):
+    input_len = max(ts_len, 20)
+    (_, supports, sys) = zip(*[support_gen[i][0] for i in range(3)])
+    supports_cache = np.copy(supports)
+    N = len(data_gen.data.items())
+    n = N // 10 if debug else N
+
+    # ═════════ OPTIMIZACIÓN 1: INDEXACIÓN O(1) ═════════
+    sorted_units = opt_history.unit.values
+    unit_to_idx = {unit: idx for idx, unit in enumerate(sorted_units)}
+
+    # Filtrado y ordenación rápida utilizando el diccionario
+    curves = [c for c in data_gen.data.items() if ''.join(c[0]) in unit_to_idx]
+    curves.sort(key=lambda x: unit_to_idx[''.join(x[0])])
+    curves = curves[:n]
+
+    processed_data = []
+    supports = np.copy(supports_cache)
+
+    j = 0
+    current_experiment = None
+
+    # Acumuladores para realizar Batching al modelo
+    accumulated_signals = []
+    accumulated_info = []
+
+    def flush_experiment_batch():
+        """Envía todas las señales acumuladas del experimento actual en un solo lote."""
+        if not accumulated_signals:
+            return
+
+        # Guardamos cuántos pasos temporales aporta cada unidad para desempaquetar luego
+        lens = [len(s) for s in accumulated_signals]
+        concatenated_signals = np.concatenate(accumulated_signals, axis=0)
+
+        # Ejecutamos el modelo solo 3 veces para TODO el bloque en lugar de por cada unidad
+        preds_block = []
+        for support, sy in zip(supports, sys):
+            preds_block.append(model((concatenated_signals, support, sy)).numpy())
+
+        # Desempaquetamos y calculamos estadísticas por unidad (Corrige tus bugs de índices)
+        idx = 0
+        for l, info in zip(lens, accumulated_info):
+            # Extraer las 3 predicciones correspondientes a esta unidad específica
+            unit_preds = [p[idx:idx + l] for p in preds_block]
+            idx += l
+
+            # Stackear y calcular media/std del ensamble de forma matemática correcta
+            unit_preds_arr = np.array(unit_preds)  # Formato: (3, num_steps, output_dim)
+            u_mean = np.mean(unit_preds_arr, axis=0)
+            u_std = np.std(unit_preds_arr, axis=0)
+
+            processed_data.append((
+                info['unit_str'],
+                info['signals'],
+                u_mean,
+                u_std,
+                info['signal_trimmed'],
+                info['final_perf']
+            ))
+
+        accumulated_signals.clear()
+        accumulated_info.clear()
+
+    # Bucle Principal de Procesamiento
+    for k, (unit, signal) in enumerate(tqdm.tqdm(curves)):
+        y = signal[-1, 1]
+        experiment = ''.join(unit).split("_")[:-1]
+
+        # ═════════ OPTIMIZACIÓN 2: VENTANAS VECTORIZADAS CON NUMPY ═════════
+        num_steps = min(ts_len, signal.shape[0]) - 1
+        if num_steps > 0:
+            signals = np.zeros((num_steps, input_len, 3))
+            for i in range(1, num_steps + 1):
+                signals[i - 1, :i, :2] = signal[:i]
+                signals[i - 1, :i, 2] = 1.0  # Rellenar la máscara activa
+        else:
+            signals = np.empty((0, input_len, 3))
+
+        signal_trimmed = signal[:input_len]
+        i_trim = signal_trimmed.shape[0]
+
+        # Añadimos la unidad al lote actual antes de evaluar los cambios de estado
+        if num_steps > 0:
+            accumulated_signals.append(signals)
+            accumulated_info.append({
+                'unit_str': ''.join(unit), 'signals': signals,
+                'signal_trimmed': signal_trimmed, 'final_perf': signal[-1][1]
+            })
+
+        # Control del estado de los soportes del experimento
+        if experiment != current_experiment:
+            # Forzamos la inferencia del lote que usaba los soportes vigentes antes del cambio
+            flush_experiment_batch()
+
+            supports = np.copy(supports_cache)
+            current_experiment = experiment
+
+            # Construcción rápida del nuevo soporte sin vstack/hstack
+            s_support = np.zeros((input_len, 3))
+            s_support[:i_trim, :2] = signal_trimmed
+            s_support[:i_trim, 2] = 1.0
+
+            # Mantenemos tu lógica exacta de actualización (j permanece estático en 0)
+            supports[j % 3][k % 100] = s_support
+            sys[j % 3][k % 100] = y
+
+    # Vaciar el último lote restante tras salir del bucle
+    flush_experiment_batch()
+
+    return processed_data
+
 def arima_train(model_creator, config, ifold, queue, debug, directory, timeout):
     logging.info('Starting training (fold %d) %s' % (ifold, config))
 

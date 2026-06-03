@@ -39,10 +39,16 @@ class BOPredictiveSimulator:
         # Guardar mapeo de hiperparámetros completo para el control de rangos
         self.exp_hp_df = exp_hp_df
 
-        hp_cols = [c for c in Xexp.columns if 'model__' in c]
+        hp_cols = [c for c in exp_hp_df.columns if 'model__' in c]
         hp_cols = [c for c in hp_cols if c not in ['model__input_shape', 'model__output', 'model__net',
                                                    'model__output_dim']]
-
+        exclude_cols = []
+        for c in hp_cols:
+            if exp_hp_df[c].isnull().all():
+                exclude_cols.append(c)
+            elif 'activation' in c:
+                exp_hp_df[c] = exp_hp_df[c].map(lambda x: 'leakyReLU' if 'LeakyReLU' in x else x)
+        hp_cols = [c for c in hp_cols if c not in exclude_cols]
         self.hp_cols = hp_cols
 
         # ══════ OPTIMIZACIÓN NUMPY (Búsqueda Vectorizada) ══════
@@ -52,13 +58,13 @@ class BOPredictiveSimulator:
 
         # Extraer el espacio de búsqueda (rangos y categorías) dinámico para Optuna
         self.categorical_params = ['model__activation', 'model__batch_normalization', 'model__conv_activation',
-                                   'model__dense_activation']
+                                   'model__dense_activation', 'model__kernel_size', 'model__bidirectional',
+                                   'model__cell_type']
         self.param_ranges = {}
-        self.categorical_params = []
+        #self.categorical_params = []
         for col in self.hp_cols:
             if col in self.categorical_params:
                 self.param_ranges[col] = exp_hp_df[col].unique().tolist()
-                self.categorical_params.append(col)
             else:
                 self.param_ranges[col] = (float(exp_hp_df[col].min()), float(exp_hp_df[col].max()))
 
@@ -121,7 +127,7 @@ class BOPredictiveSimulator:
             "epochs_avoided": 0,
             "total_epochs": 0,
             "total_train_time": 0,
-            "avoided_train_time": 0,
+
             "num_prunings": 0,
             "num_runs": 0
         }
@@ -271,13 +277,17 @@ class BOPredictiveSimulator:
 
         # Calcular Scores finales de la estrategia comparada
         performance_score = np.mean([r / f for r, f in zip(real_best_losses, filter_best_losses)])
-        time_score = (g_metrics["epochs_avoided"] / max(1, g_metrics["total_epochs"]))
+
+        total_epochs = max(1, g_metrics["total_epochs"])
+        epochs_used = total_epochs - g_metrics["epochs_avoided"]
+        time_score = epochs_used / total_epochs
         score = (0.5 * performance_score + 0.5 * time_score)
 
         if csv_config is not None:
             # Rellenar diccionario de configuración/salida
             for k, v in g_metrics.items():
                 csv_config[k] = v
+            csv_config["experiments"] = experiments
             csv_config["filter_best_losses"] = filter_best_losses
             csv_config["real_best_losses"] = real_best_losses
             csv_config["rank_losses"] = rank_losses
@@ -286,8 +296,6 @@ class BOPredictiveSimulator:
 
             # Logging informativo idéntico a tu función original
             logging.info(f"epochs_avoided: {g_metrics['epochs_avoided']}")
-            logging.info(f"total_train_time: {g_metrics['total_train_time']}")
-            logging.info(f"avoided_train_time: {g_metrics['avoided_train_time']}")
             logging.info(
                 f"found best: {np.mean([(np.abs(f - r) < 1e-06) or (f < r) for f, r in zip(filter_best_losses, real_best_losses)])}")
             return csv_config
