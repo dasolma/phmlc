@@ -2,6 +2,9 @@ import argparse
 import logging
 import multiprocessing
 import os, sys
+
+from phm_framework.optimization.curves.fsldt import curves_fsldt
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 
@@ -90,20 +93,15 @@ def train_loop(lr):
 
                 train(config)
 
-    elif args.model in ['protonet', 'protonetv2']:
+    elif args.model in ['protonet', 'protonetv2', 'fsldt']:
         nblocks = [1, 2, 3, 4]
         embedding_dims = [16, 32, 64, 128, 256]
         block_sizes = [1, 2, 3]
 
-        log = None
-        log_path = os.path.join(args.output, 'CURVES/final_loss/protonet/')
-        if os.path.exists(os.path.join(log_path, 'train.csv')):
-            log = load_log(None, log_path)
-
         processes = []
         for nblocks, embedding_dim, block_size in itertools.product(nblocks, embedding_dims, block_sizes):
-
-                for ts_len in range(5, 21, 5):
+                ts_len_range = [21] if args.model == 'fsldt' else range(5, 21, 5)
+                for ts_len in ts_len_range:
 
                     config = {
                         'model': {
@@ -159,16 +157,10 @@ def train_loop(lr):
                     processes.append(p)
                     time.sleep(5)
 
-                    #train(config)
         for p in processes:
             p.join()
 
     elif args.model in ['hb', 'bohb']:
-
-        log = None
-        log_path = os.path.join(args.output, 'CURVES/final_loss/hb/')
-        if os.path.exists(os.path.join(log_path, 'train.csv')):
-            log = load_log(None, log_path)
 
         processes = []
 
@@ -440,6 +432,17 @@ if __name__ == "__main__":
                 debug=args.debug
             )
 
+        elif args.model == 'fsldt':
+            config['model']['net'] = 'fsldt'
+            creator = get_model_creator('protonet')
+
+            return phm_framework.optimization.utils.parameter_opt_cv_fsldt(
+                creator,
+                config,
+                trainer=curves_fsldt,
+                debug=args.debug
+            )
+
         elif args.model == 'hb':
             config['model']['net'] = 'hb'
 
@@ -481,7 +484,7 @@ if __name__ == "__main__":
 
     else:
 
-        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'hb', 'bohb']
+        isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'fsldt', 'hb', 'bohb']
         if isnet(args.model):
             random_states = [29, 8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444]
 

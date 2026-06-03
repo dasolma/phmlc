@@ -3,8 +3,6 @@ import logging
 import sys
 import time
 import traceback
-from collections import defaultdict
-
 import numpy as np
 import tqdm
 import random
@@ -14,9 +12,9 @@ from phmd import datasets
 from phm_framework.data import Sequence, SequenceV2, FSLSequence
 from phm_framework.data.generators import load_train_generators, load_train_net_generators_v2
 from phm_framework.logging import log_train, HASH_EXCLUDE, confighash, secure_decode
-from phm_framework.models.utils import simplify_tree_recursive
+
 from phm_framework.optimization.hyper_parameters import flat_dict
-from phm_framework.optimization.utils import load_log
+from phm_framework.optimization.utils import load_log, train_rule_tree
 from statsmodels.tsa.arima.model import ARIMA
 import phm_framework as phmf
 import warnings
@@ -1101,18 +1099,6 @@ def generate_rule_tree(X, Y, negative_class_threshold=0.5):
     return train_rule_tree(X, Y, best_params, negative_class_threshold)
 
 
-def train_rule_tree(X, Y, params, negative_class_threshold):
-    valid_cols = [c for c in X.columns if c != 'best_performance']
-    clf = tree.DecisionTreeClassifier(max_depth=params['max_depth'],
-                                      min_samples_leaf=params['min_samples'],
-                                      class_weight={False: 1, True: params['continue_weight']})
-    clf.fit(X[valid_cols], Y)
-    if negative_class_threshold >= 0.5:
-        simplify_tree_recursive(clf.tree_, negative_class_threshold=negative_class_threshold)
-    p = clf.predict(X[valid_cols])
-    facc, tacc = (p == Y).values[np.where(~Y)].mean(), (p == Y).values[np.where(Y)].mean()
-
-    return clf, tacc, facc
 
 
 def discretize_data(model, results, support_gen, ts_len, data_gen, debug=False):
