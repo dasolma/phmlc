@@ -3,16 +3,13 @@ import logging
 import multiprocessing
 import os, sys
 
-from phm_framework.optimization.curves.fsldt import curves_fsldt
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-
-
+from phm_framework.optimization.curves.fsldt import curves_fsldt
 import itertools
 from phmd import datasets
 from phm_framework.optimization.curves.bohb import bohb_simulation
 from phm_framework.optimization.curves.hyperband import hyperband_simulation
-from phm_framework.logging import load_log, get_rows
 import time
 
 logging.basicConfig(level=logging.INFO)
