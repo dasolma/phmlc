@@ -1,5 +1,6 @@
 import copy
 import importlib
+import itertools
 import sys
 import traceback
 import pickle as pk
@@ -127,7 +128,8 @@ class BOPredictiveSimulator:
             "epochs_avoided": 0,
             "total_epochs": 0,
             "total_train_time": 0,
-
+            "saved_time": 0,
+            "total_time": 0,
             "num_prunings": 0,
             "num_runs": 0
         }
@@ -157,7 +159,7 @@ class BOPredictiveSimulator:
             # 3. Evaluar simulación de parada con el clasificador
             decision_data = self.Xexp[self.Xexp.unit == unit].sort_values('epoch')
             preds = decision_data.pred.values
-            ureal_epochs = len(preds)
+            ureal_epochs = len(self.curves_dict[unit]) # TODO: revisar len(preds)
 
             patience = 3
             stop_counter = 0
@@ -182,6 +184,10 @@ class BOPredictiveSimulator:
             metrics["total_epochs"] += ureal_epochs
             metrics["epochs_avoided"] += uepochs_avoided
 
+            # El tiempo de entrenamiento
+            epoch_time = self.exp_hp_df.loc[unit].train__time
+            metrics['saved_time'] += epoch_time * uepochs_avoided
+            metrics['total_time'] += ureal_epochs * uepochs_avoided
 
             # Recuperamos el train__time real mapeando al DataFrame original que guardamos
             # Nota: para simplificar la lectura, asumimos que se inyecta o se lee directamente
@@ -244,6 +250,10 @@ class BOPredictiveSimulator:
         filter_best_losses = []
         real_best_losses = []
         rank_losses = []
+        rank_pct = []
+        epochs_saved_pct = []
+        saved_time = []
+        total_time = []
 
         for experiment_id in experiments:
             # Construir el simulador aislado del experimento usando la factoría
@@ -258,6 +268,10 @@ class BOPredictiveSimulator:
             filter_best_losses.append(f_best)
             real_best_losses.append(r_best)
             rank_losses.append(rank_idx)
+            rank_pct.append(rank_idx / len(sim.unit_ordered))
+            epochs_saved_pct.append(l_metrics['epochs_avoided']/l_metrics['total_epochs'])
+            saved_time.append(l_metrics['saved_time'])
+            total_time.append(l_metrics['total_time'])
 
             # Consolidar acumuladores numéricos dinámicamente
             for k in g_metrics.keys():
@@ -279,8 +293,7 @@ class BOPredictiveSimulator:
         performance_score = np.mean([r / f for r, f in zip(real_best_losses, filter_best_losses)])
 
         total_epochs = max(1, g_metrics["total_epochs"])
-        epochs_used = total_epochs - g_metrics["epochs_avoided"]
-        time_score = epochs_used / total_epochs
+        time_score = g_metrics["epochs_avoided"] / total_epochs
         score = (0.5 * performance_score + 0.5 * time_score)
 
         if csv_config is not None:
@@ -291,6 +304,8 @@ class BOPredictiveSimulator:
             csv_config["filter_best_losses"] = filter_best_losses
             csv_config["real_best_losses"] = real_best_losses
             csv_config["rank_losses"] = rank_losses
+            csv_config["saved_time"] = saved_time
+            csv_config["total_time"] = total_time
             csv_config["train__status"] = "FINISHED"
             csv_config["score"] = score
 
@@ -298,9 +313,10 @@ class BOPredictiveSimulator:
             logging.info(f"epochs_avoided: {g_metrics['epochs_avoided']}")
             logging.info(
                 f"found best: {np.mean([(np.abs(f - r) < 1e-06) or (f < r) for f, r in zip(filter_best_losses, real_best_losses)])}")
-            return csv_config
 
-        return score, performance_score, time_score
+        return score, performance_score, time_score, np.mean(rank_losses), np.mean(rank_pct), \
+               np.mean(epochs_saved_pct)
+
 
 def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout):
     logging.info('Starting training (fold %d) %s' % (ifold, config))
@@ -460,7 +476,7 @@ def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout)
         log_train(csv_config, directory)
 
 
-def simulate_strategy_optuna(Xtest, curves, opt_history, clf, hp_cols=None, csv_config=None):
+def simulate_strategy_optuna(Xtest, curves, opt_history, clf, csv_config=None):
     Xtest = Xtest.copy()
 
     resultado_experimento = BOPredictiveSimulator.run_all_experiments(
@@ -475,56 +491,58 @@ def simulate_strategy_optuna(Xtest, curves, opt_history, clf, hp_cols=None, csv_
     return resultado_experimento
 
 
-def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, directory):
+def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, directory, debug=False):
     """
     Busca el árbol que maximiza el éxito de la estrategia global.
     """
     best_score = -np.inf
     best_tree = None
     best_params = None
+    best_rank = None
+    best_rank_pct = None
 
     print(f"ACC(T)\tACC(F)\tScore\tPerf.Score\tT.Score")
     print(f"------\t------\t-----\t----------\t-------")
 
     rules_founds = []
-    for negative_class_threshold in np.arange(0.45, 1.0, 0.05):
-        # Espacio de búsqueda de configuraciones de árbol
-        for max_depth in [2, 3, 4, 5]:
+    params = itertools.product(np.arange(0.45, 1.0, 0.05),
+                                [2, 3, 4, 5],
+                                [50, 100, 200],
+                                range(10, 100, 10))
+    if debug:
+        params = [(0.45,2,50,10)]
+    for negative_class_threshold, max_depth, min_samples, w in params:
 
-            for min_samples in [50, 100, 200]:
+        # 1. Entrenar un árbol candidato con los datos de todos los folds
+        params = {}
+        params['min_samples'] = min_samples
+        params['max_depth'] = max_depth
+        params['continue_weight'] = w
+        candidate_tree, tacc, facc = train_rule_tree(X_train, Y_train, params, negative_class_threshold)
 
-                for w in range(10, 100, 10):
+        # avoided previously run simulations
+        rules = export_text(candidate_tree, feature_names=candidate_tree.feature_names_in_)
+        if rules in rules_founds:
+            continue
+        rules_founds.append(rules)
 
-                    # 1. Entrenar un árbol candidato con los datos de todos los folds
-                    params = {}
-                    params['min_samples'] = min_samples
-                    params['max_depth'] = max_depth
-                    params['continue_weight'] = w
-                    candidate_tree, tacc, facc = train_rule_tree(X_train, Y_train, params, negative_class_threshold)
+        # 2. SIMULAR la estrategia en todos los folds
+        current_strategy_score, performance_score, time_score, mean_rank, mean_rank_pct, epochs_saved_pct = \
+            simulate_strategy_optuna(X_val, curves, opt_history, candidate_tree)
 
-                    # avoided previously run simulations
-                    rules = export_text(candidate_tree, feature_names=candidate_tree.feature_names_in_)
-                    if rules in rules_founds:
-                        continue
-                    rules_founds.append(rules)
-
-                    # 2. SIMULAR la estrategia en todos los folds
-                    current_strategy_score, performance_score, time_score = simulate_strategy_optuna(X_val, curves, opt_history, candidate_tree)
-
-                    print(
-                        f" {tacc:0.2f}\t {facc:0.2f}\t{current_strategy_score:0.3f}\t{performance_score:0.3f}\t{time_score:0.3f}", end="")
-                    # 3. Guardar el mejor
-                    if current_strategy_score > best_score:
-                        best_score = current_strategy_score
-                        best_tree = candidate_tree
-                        best_params = copy.deepcopy(params)
-                        print("*")
-                    else:
-                        print("")
-
+        print(
+            f" {tacc:0.2f}\t {facc:0.2f}\t{current_strategy_score:0.3f}\t{performance_score:0.3f}\t{time_score:0.3f}", end="")
+        # 3. Guardar el mejor
+        if current_strategy_score > best_score:
+            best_score = current_strategy_score
+            best_tree = candidate_tree
+            best_params = copy.deepcopy(params)
+            best_rank = mean_rank
+            best_rank_pct = mean_rank_pct
+            print("*")
+        else:
+            print("")
 
 
-    #save_tree(X_val, arch_hash, best_tree, directory, nhash, best_params)
-
-    return best_tree, best_params, best_score
+    return best_tree, best_params, best_score, best_rank, best_rank_pct, epochs_saved_pct
 

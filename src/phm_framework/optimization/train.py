@@ -124,7 +124,7 @@ def train_loop(lr):
                             'epochs': 1 if args.debug else 100,
                             'batch_size': 32,
                             'timeout': 60 * 30,
-                            'ts_len': 9 if args.debug else ts_len,
+                            'ts_len': ts_len,
                             'lr': lr,
                             'verbose': True,
                             'num_folds': min(5, max_folds),

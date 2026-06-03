@@ -1373,7 +1373,7 @@ def get_curve_predictions_reusing(model, support_gen, ts_len, data_gen, opt_hist
         for support, sy in zip(supports, sys):
             preds_block.append(model((concatenated_signals, support, sy)).numpy())
 
-        # Desempaquetamos y calculamos estadísticas por unidad (Corrige tus bugs de índices)
+        # Desempaquetamos y calculamos estadísticas por unidad
         idx = 0
         for l, info in zip(lens, accumulated_info):
             # Extraer las 3 predicciones correspondientes a esta unidad específica

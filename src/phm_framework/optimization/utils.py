@@ -292,7 +292,8 @@ def parameter_opt_cv_v2(model_creator: Callable,
 
         # curves
         curves = pk.load(open(datas[0], 'rb'))[1]
-        optimal_tree, tree_params, val_sim_score = find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir)
+        optimal_tree, tree_params, val_sim_score = \
+            find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir)
         csv_config['val_sim_score'] = val_sim_score
 
         test_datasets = datasets[2*ndatasets:]
@@ -422,6 +423,8 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
                     lock.release()
                     time.sleep(10)
 
+        csv_config['pn_data'] = data['folds']
+
         # Obtenemos las curvas
         Xs = [pk.load(open(datas[i], 'rb'))[0] for i in range(len(datas))]
 
@@ -431,7 +434,6 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
 
         # Split for train and validation (simulation)
         datasets = X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)]).unique()
-        # todo: /3
         ndatasets = len(datasets) // 3
 
         train_datasets = datasets[:ndatasets]
@@ -456,14 +458,24 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
 
         # curves
         curves = pk.load(open(datas[0], 'rb'))[1]
-        optimal_tree, tree_params, val_sim_score = find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir)
-        csv_config['val_sim_score'] = val_sim_score
+        optimal_tree, tree_params, val_sim_score, val_best_rank, val_rank_pct, epochs_saved_pct = \
+            find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir, debug)
+        csv_config['mean_train_val_score'] = val_sim_score
+        csv_config['mean_train_rank'] = val_sim_score
+        csv_config['train_rank_pct'] = val_rank_pct
+        csv_config['train_epochs_saved_pct'] = epochs_saved_pct
 
         test_datasets = datasets[2*ndatasets:]
         X_test = X[X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)] in test_datasets)]
         del X_test['continue']
 
-        csv_config = simulate_strategy_optuna(X_test, curves, opt_history, optimal_tree, csv_config)
+
+        test_sim_score, _, _, test_best_rank, test_rank_pct, epochs_saved_pct = \
+            simulate_strategy_optuna(X_test, curves, opt_history, optimal_tree, csv_config)
+        csv_config['mean_test_val_score'] = test_sim_score
+        csv_config['mean_test_rank'] = test_best_rank
+        csv_config['test_rank_pct'] = test_rank_pct
+        csv_config['test_epochs_saved_pct'] = epochs_saved_pct
 
         log_train(csv_config, output_dir)
         save_tree(arch_hash, optimal_tree, output_dir, tree_params)
