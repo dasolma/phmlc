@@ -148,13 +148,8 @@ def train_loop(lr):
                     }
 
 
-                    p = multiprocessing.Process(target=train_with_sem, args=(config,))
-                    p.start()
-                    processes.append(p)
-                    time.sleep(5)
+                    train(config)
 
-        for p in processes:
-            p.join()
 
     elif args.model in ['hb', 'bohb']:
 

@@ -486,6 +486,187 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
         sys.stdout.flush()
         queue.put(None)
 
+
+def parameter_opt_cv_fsldt(model_creator: Callable,
+                           experiment_config: dict = {},
+                           trainer: Callable = None,
+                           debug: bool = False):
+    '''
+        Configuración y ejecución de un experimento de optimización de parámetros utilizando validación cruzada
+    '''
+    try:
+        training_config = experiment_config['train']
+        output_dir = experiment_config['log']['directory']
+        model_name = experiment_config['model']['net']
+        data_name = experiment_config['data']['dataset_name']
+        target = experiment_config['data']['dataset_target']
+        random_state = training_config["random_state"]
+
+        # Extract test datasets
+        ds = phmd.datasets.Dataset(data_name)
+        task = ds['final_loss']
+        task.random_state = random_state
+        task.filters = {'data': 'curves'}
+
+        X = task.load()[0]
+        dataset_names = X.dataset.unique()
+        random.shuffle(dataset_names)
+        train_end_index = int(len(dataset_names) * 0.4)
+        test_dataset_names = dataset_names[train_end_index:]
+
+        del X
+        experiment_config['data']['test_dataset_names'] = test_dataset_names
+
+        if trainer is None:
+            net_module = getattr(getattr(phm_framework, 'models'), model_name)
+            trainer_class = getattr(net_module, 'TRAINER')
+            trainer = trainer_class().train
+
+        output_dir = os.path.join(output_dir, data_name, target, model_name)
+
+        ds = phmd.datasets.Dataset(data_name)
+        task = ds[target]
+
+        timeout = secure_decode(training_config, "timeout", int, default=None, task=task.meta, pop=False)
+        experiment_config['train'] = training_config
+
+        data = experiment_config.copy()
+        data['model'] = data['model']['net'] if model_creator is None else model_creator.__name__
+        data['folds'] = {}
+
+        hashes = []
+        datas = []
+        num_folds = 2 if debug else 3
+        csv_config = None
+        LOCK_FILE = os.path.join(output_dir, 'net.lock')
+
+        # ═══════════════ NUEVA SECCIÓN PARALELA ═══════════════
+        processes = []
+        queues = []
+
+        # Envolvemos todo el grupo de folds en el LOCK para que corran juntos de forma exclusiva
+        with FileLock(LOCK_FILE) as lock:
+            try:
+                # 1. Lanzar TODOS los procesos en paralelo (Non-blocking)
+                for ifold in range(num_folds):
+                    queue = multiprocessing.Queue()
+                    if model_creator is not None:
+                        args = (model_creator, experiment_config, ifold, queue, debug, output_dir, timeout)
+                    else:
+                        args = (experiment_config, ifold, queue, debug, output_dir, timeout)
+
+                    p = multiprocessing.Process(target=trainer, args=args)
+                    p.start()
+
+                    processes.append((ifold, p))
+                    queues.append((ifold, queue))
+
+                logging.info(f"Lanzados {num_folds} folds simultáneamente en la CPU.")
+
+                # 2. Recolectar resultados conforme vayan terminando
+                raw_results = {}
+                for ifold, queue in queues:
+                    try:
+                        # Al estar ya todos corriendo, el .get() esperará al proceso correspondiente
+                        r = queue.get(timeout=timeout)
+                    except multiprocessing.queues.Empty:
+                        r = None
+                    raw_results[ifold] = r
+
+                # 3. Control de vida y cierre seguro de los procesos
+                for ifold, p in processes:
+                    p.join(timeout=5)
+                    if p.is_alive():
+                        logging.warning(f'Fold {ifold} superó el timeout de ejecución. Forzando terminación.')
+                        p.terminate()
+                        p.join()
+
+                # 4. Procesar y estructurar los datos recuperados
+                for ifold in range(num_folds):
+                    r = raw_results[ifold]
+                    if r is None:
+                        logging.error(f"El Fold {ifold} falló o no devolvió datos. Abortando experimento.")
+                        return
+
+                    data['folds'][ifold] = r[0]
+                    arch_hash = r[1]
+                    hashes.append(arch_hash)
+                    datas.append(r[2])
+                    csv_config = r[3]  # Se preserva el último csv_config de la iteración tal como en tu código
+
+                    logging.info(f"Procesado con éxito el Fold {ifold} de {arch_hash}")
+
+            except Exception as ex:
+                logging.error("Error en la ejecución paralela: %s" % ex)
+                logging.error(traceback.format_exc())
+                sys.stdout.flush()
+                return
+            finally:
+                lock.release()
+                time.sleep(5)  # Un pequeño respiro tras liberar los recursos
+
+            # ═══════════════ FIN DE LA SECCIÓN PARALELA ═══════════════
+
+            csv_config['pn_data'] = data['folds']
+
+            # Obtenemos las curvas
+            Xs = [pk.load(open(datas[i], 'rb'))[0] for i in range(len(datas))]
+
+            # Agregate discretized data generated by each network
+            X = pd.concat(Xs).groupby(['unit', 'epoch']).mean().reset_index()
+            X = X[~X.T.isnull().any()]
+
+            # Split for train and validation (simulation)
+            datasets = X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)]).unique()
+            ndatasets = len(datasets) // 3
+
+            train_datasets = datasets[:ndatasets]
+            val_datasets = datasets[ndatasets:2 * ndatasets]
+
+            X_train = X[X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)] in train_datasets)]
+            Y_train = (X_train['continue'] > 0.5).astype('bool')
+
+            del X_train['continue']
+            del X_train['unit']
+            X_val = X[X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)] in val_datasets)]
+            del X_val['continue']
+
+            # Get optimization history
+            ds = phmd.datasets.Dataset(data_name)
+            _task = ds['final_loss']
+            _task.filters = {"data": "results"}
+            (opt_history,) = _task.load()
+
+            from phm_framework.optimization.curves.train import save_tree
+            from phm_framework.optimization.curves.fsldt import simulate_strategy_optuna, find_optimal_strategy_tree
+
+            # Curves
+            curves = pk.load(open(datas[0], 'rb'))[1]
+            optimal_tree, tree_params, val_sim_score, val_best_rank, val_rank_pct, epochs_saved_pct = \
+                find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir, debug)
+            csv_config['mean_train_val_score'] = val_sim_score
+            csv_config['mean_train_rank'] = val_sim_score
+            csv_config['train_rank_pct'] = val_rank_pct
+            csv_config['train_epochs_saved_pct'] = epochs_saved_pct
+
+            test_datasets = datasets[2 * ndatasets:]
+            X_test = X[X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)] in test_datasets)]
+            del X_test['continue']
+
+            test_sim_score, _, _, test_best_rank, test_rank_pct, epochs_saved_pct = \
+                simulate_strategy_optuna(X_test, curves, opt_history, optimal_tree, csv_config)
+            csv_config['mean_test_val_score'] = test_sim_score
+            csv_config['mean_test_rank'] = test_best_rank
+            csv_config['test_rank_pct'] = test_rank_pct
+            csv_config['test_epochs_saved_pct'] = epochs_saved_pct
+
+            log_train(csv_config, output_dir)
+            save_tree(arch_hash, optimal_tree, output_dir, tree_params)
+
+    except Exception as ex:
+        logging.error("Error global en parameter_opt_cv_fsldt: %s" % ex)
+        logging.error(traceback.format_exc())
+        sys.stdout.flush()
 def parameter_opt_cv_hb(model_creator: Callable,
                      experiment_config: dict = {},
                      trainer: Callable = None,

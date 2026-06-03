@@ -1,6 +1,8 @@
 import copy
 import importlib
 import itertools
+import multiprocessing
+import os
 import sys
 import traceback
 import pickle as pk
@@ -20,6 +22,47 @@ import logging
 import warnings
 from typing import Dict, List, Tuple, Optional
 
+# Variables globales temporales para que cada núcleo de la CPU acceda a los datos sin copiarlos
+_w_cls = None
+_w_Xtest = None
+_w_curves = None
+_w_opt_history = None
+
+
+def _init_experiment_worker(cls, Xtest, curves, opt_history):
+    """Inicializa la memoria compartida de cada proceso hijo."""
+    global _w_cls, _w_Xtest, _w_curves, _w_opt_history
+    _w_cls = cls
+    _w_Xtest = Xtest
+    _w_curves = curves
+    _w_opt_history = opt_history
+
+
+def _run_parallel_experiment(args):
+    """Ejecuta de forma aislada la simulación de un único experimento."""
+    experiment_id, seed, minimize = args
+
+    # Construir el simulador usando la referencia global de la clase y los datos
+    sim = _w_cls.from_experiment(experiment_id, _w_Xtest, _w_opt_history, _w_curves, minimize=minimize)
+    if sim is None:
+        return None
+
+    # Ejecutar simulación BO + Pruning
+    f_best, r_best, rank_idx, l_metrics = sim.run_once(seed=seed)
+
+    # Extraer los datos de tiempos históricos aquí mismo para aprovechar la CPU en paralelo
+    eresults = _w_opt_history[_w_opt_history.unit.str.contains(experiment_id, na=False)]
+    t_time = eresults[~eresults.train__time.isnull()].train__time.sum()
+
+    return {
+        "experiment_id": experiment_id,
+        "f_best": f_best,
+        "r_best": r_best,
+        "rank_idx": rank_idx,
+        "l_metrics": l_metrics,
+        "t_time": t_time,
+        "unit_ordered_len": len(sim.unit_ordered)
+    }
 
 class BOPredictiveSimulator:
     def __init__(
@@ -186,6 +229,9 @@ class BOPredictiveSimulator:
 
             # El tiempo de entrenamiento
             epoch_time = self.exp_hp_df.loc[unit].train__time
+            if hasattr(epoch_time, "__len__"):  # Si es un array/serie debido a duplicados
+                epoch_time = epoch_time.mean()
+
             metrics['saved_time'] += epoch_time * uepochs_avoided
             metrics['total_time'] += ureal_epochs * uepochs_avoided
 
@@ -221,15 +267,15 @@ class BOPredictiveSimulator:
     def run_all_experiments(
             cls,
             Xtest: pd.DataFrame,
-            curves: List,
+            curves: list,
             opt_history: pd.DataFrame,
             clf,
             minimize: bool = True,
             seed: int = 42,
-            csv_config: Optional[dict] = None
+            csv_config: dict = None
     ):
         """
-        Orquesta la simulación iterando sobre todos los experimentos disponibles.
+        Orquesta la simulación distribuyendo los experimentos en paralelo a lo largo de la CPU.
         """
         warnings.filterwarnings("ignore", category=optuna.exceptions.ExperimentalWarning)
         optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -237,7 +283,7 @@ class BOPredictiveSimulator:
         Xtest = Xtest.copy()
         Xtest['pred'] = clf.predict(Xtest[clf.feature_names_in_])
 
-        # Identificar los experimentos válidos que cruzan entre curvas e historial
+        # Identificar los experimentos válidos
         experiments_in_test = Xtest.unit.map(lambda x: "_".join(x.split("_")[:-1])).unique()
         experiments_in_curves = set(['_'.join(e[0].split('_')[:-1]) for e in curves])
         experiments = [e for e in experiments_in_test if e in experiments_in_curves]
@@ -254,53 +300,70 @@ class BOPredictiveSimulator:
         epochs_saved_pct = []
         saved_time = []
         total_time = []
+        valid_experiments = []
 
-        for experiment_id in experiments:
-            # Construir el simulador aislado del experimento usando la factoría
-            sim = cls.from_experiment(experiment_id, Xtest, opt_history, curves, minimize)
-            if sim is None:
+        # ═══════════════ PROCESAMIENTO PARALELO ═══════════════
+        num_workers = max(1, multiprocessing.cpu_count() - 1)
+
+        # Preparamos las tareas empaquetadas
+        tasks = [(exp_id, seed, minimize) for exp_id in experiments]
+
+        # Lanzamos el Pool inyectando las matrices pesadas una sola vez por Core
+        pool = multiprocessing.Pool(
+            processes=num_workers,
+            initializer=_init_experiment_worker,
+            initargs=(cls, Xtest, curves, opt_history)
+        )
+
+        try:
+            raw_results = pool.map(_run_parallel_experiment, tasks)
+        finally:
+            pool.close()
+            pool.join()
+        # ═══════════════════════════════════════════════════════
+
+        # Consolidar y acumular los resultados (Bucle secuencial ultra-rápido de agregación)
+        for res in raw_results:
+            if res is None:
                 continue
 
-            # Ejecutar simulación BO + Pruning
-            f_best, r_best, rank_idx, l_metrics = sim.run_once(seed=seed)
+            experiment_id = res["experiment_id"]
+            f_best = res["f_best"]
+            r_best = res["r_best"]
+            rank_idx = res["rank_idx"]
+            l_metrics = res["l_metrics"]
+            t_time = res["t_time"]
 
-            # Consolidar colecciones
+            valid_experiments.append(experiment_id)
             filter_best_losses.append(f_best)
             real_best_losses.append(r_best)
             rank_losses.append(rank_idx)
-            rank_pct.append(rank_idx / len(sim.unit_ordered))
-            epochs_saved_pct.append(l_metrics['epochs_avoided']/l_metrics['total_epochs'])
+
+            rank_pct.append(rank_idx / res["unit_ordered_len"])
+            epochs_saved_pct.append(l_metrics['epochs_avoided'] / l_metrics['total_epochs'])
             saved_time.append(l_metrics['saved_time'])
             total_time.append(l_metrics['total_time'])
 
-            # Consolidar acumuladores numéricos dinámicamente
+            # Consolidar acumuladores numéricos del diccionario global
             for k in g_metrics.keys():
-                # Nota: Para el train_time, extraemos el valor real de opt_history del experimento actual
-                if k == "total_train_time" or k == "avoided_train_time":
-                    # Cálculo proporcional del tiempo según épocas evitadas del experimento
-                    eresults = opt_history[opt_history.unit.str.contains(experiment_id, na=False)]
-                    t_time = eresults[~eresults.train__time.isnull()].train__time.sum()
-                    if k == "total_train_time":
-                        g_metrics[k] += t_time
-                    else:
-                        # Estimación del tiempo evitado relativo al ratio de épocas del grupo
-                        ratio = l_metrics["epochs_avoided"] / max(1, l_metrics["total_epochs"])
-                        g_metrics[k] += (t_time * ratio)
+                if k == "total_train_time":
+                    g_metrics[k] += t_time
+                elif k == "avoided_train_time":
+                    ratio = l_metrics["epochs_avoided"] / max(1, l_metrics["total_epochs"])
+                    g_metrics[k] += (t_time * ratio)
                 else:
                     g_metrics[k] += l_metrics[k]
 
-        # Calcular Scores finales de la estrategia comparada
+        # Calcular Scores finales
         performance_score = np.mean([r / f for r, f in zip(real_best_losses, filter_best_losses)])
-
         total_epochs = max(1, g_metrics["total_epochs"])
         time_score = g_metrics["epochs_avoided"] / total_epochs
         score = (0.5 * performance_score + 0.5 * time_score)
 
         if csv_config is not None:
-            # Rellenar diccionario de configuración/salida
             for k, v in g_metrics.items():
                 csv_config[k] = v
-            csv_config["experiments"] = experiments
+            csv_config["experiments"] = valid_experiments
             csv_config["filter_best_losses"] = filter_best_losses
             csv_config["real_best_losses"] = real_best_losses
             csv_config["rank_losses"] = rank_losses
@@ -309,14 +372,12 @@ class BOPredictiveSimulator:
             csv_config["train__status"] = "FINISHED"
             csv_config["score"] = score
 
-            # Logging informativo idéntico a tu función original
             logging.info(f"epochs_avoided: {g_metrics['epochs_avoided']}")
             logging.info(
                 f"found best: {np.mean([(np.abs(f - r) < 1e-06) or (f < r) for f, r in zip(filter_best_losses, real_best_losses)])}")
 
         return score, performance_score, time_score, np.mean(rank_losses), np.mean(rank_pct), \
                np.mean(epochs_saved_pct)
-
 
 def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout):
     logging.info('Starting training (fold %d) %s' % (ifold, config))
