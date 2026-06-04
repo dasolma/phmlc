@@ -61,7 +61,7 @@ def _run_parallel_experiment(args):
         "rank_idx": rank_idx,
         "l_metrics": l_metrics,
         "t_time": t_time,
-        "unit_ordered_len": len(sim.unit_ordered)
+        "unit_ordered_len": min(100, len(sim.unit_ordered))
     }
 
 class BOPredictiveSimulator:
@@ -177,6 +177,8 @@ class BOPredictiveSimulator:
             "num_runs": 0
         }
 
+        best_loss = np.inf
+
         # Condición inicial: Unidad base del histórico (Unidad 0)
         init_unit = self.unit_ordered[0]
         filter_best_loss = self.Xexp[self.Xexp.unit == init_unit].final_val_loss.iloc[0]
@@ -199,10 +201,17 @@ class BOPredictiveSimulator:
             # 2. Encontrar vecino más cercano
             unit = self._find_closest_unit(suggested)
 
+            curve_data = self.curves_dict[unit]
+
+            # Best loss
+            if best_loss > curve_data[-1][1]:
+                best_loss == curve_data[-1][1]
+
             # 3. Evaluar simulación de parada con el clasificador
             decision_data = self.Xexp[self.Xexp.unit == unit].sort_values('epoch')
             preds = decision_data.pred.values
             ureal_epochs = len(self.curves_dict[unit]) # TODO: revisar len(preds)
+
 
             patience = 3
             stop_counter = 0
@@ -227,6 +236,7 @@ class BOPredictiveSimulator:
             metrics["total_epochs"] += ureal_epochs
             metrics["epochs_avoided"] += uepochs_avoided
 
+
             # El tiempo de entrenamiento
             epoch_time = self.exp_hp_df.loc[unit].train__time
             if hasattr(epoch_time, "__len__"):  # Si es un array/serie debido a duplicados
@@ -241,11 +251,15 @@ class BOPredictiveSimulator:
             if is_pruned:
                 metrics["num_prunings"] += 1
 
-            curve_data = self.curves_dict[unit]
+
+            # Si está podado, reportamos hasta final_stop_epoch. Si no, reportamos toda la curva real.
+            steps_to_report = final_stop_epoch if is_pruned else ureal_epochs
+
+            for step_idx in range(steps_to_report):
+                # El paso en Optuna suele empezar en 1 (o en 0, sé consistente con tu diseño)
+                trial.report(curve_data[step_idx][1], step=step_idx + 1)
 
             if is_pruned:
-                for step_idx in range(final_stop_epoch):
-                    trial.report(curve_data[step_idx][1], step=step_idx + 1)
                 raise optuna.TrialPruned()
             else:
                 final_loss = curve_data[-1][1]
@@ -254,11 +268,11 @@ class BOPredictiveSimulator:
                 return final_loss
 
         # Lanzar optimización para los ensayos restantes (N - 1)
-        n_trials = len(self.unit_ordered) - 1
+        n_trials = min(99, len(self.unit_ordered) - 1)
         if n_trials > 0:
             study.optimize(objective, n_trials=n_trials)
 
-        real_best_loss = self.Xexp.best_performance.min()
+        real_best_loss = best_loss #self.Xexp.best_performance.min()
         rank_loss_idx = sorted(self.Xexp.groupby('unit').final_val_loss.max().values).index(filter_best_loss)
 
         return filter_best_loss, real_best_loss, rank_loss_idx, metrics
@@ -358,7 +372,8 @@ class BOPredictiveSimulator:
         performance_score = np.mean([r / f for r, f in zip(real_best_losses, filter_best_losses)])
         total_epochs = max(1, g_metrics["total_epochs"])
         time_score = g_metrics["epochs_avoided"] / total_epochs
-        score = (0.5 * performance_score + 0.5 * time_score)
+        #score = (0.5 * performance_score + 0.5 * time_score)
+        score = np.sqrt(performance_score * time_score)
 
         if csv_config is not None:
             for k, v in g_metrics.items():
