@@ -180,6 +180,7 @@ class BOPredictiveSimulator:
         best_loss = np.inf
         filter_best_loss = np.inf
         worst_loss = 0
+        all_losses = []
 
 
         # Configurar Optuna de forma aislada
@@ -187,7 +188,7 @@ class BOPredictiveSimulator:
         study = optuna.create_study(direction="minimize" if self.minimize else "maximize", sampler=sampler)
 
         def objective(trial):
-            nonlocal filter_best_loss, best_loss, worst_loss
+            nonlocal filter_best_loss, best_loss, worst_loss, all_losses
 
             # 1. Sugerir hiperparámetros
             suggested = {}
@@ -203,6 +204,8 @@ class BOPredictiveSimulator:
             curve_data = self.curves_dict[unit]
 
             # Best loss
+            all_losses.append(curve_data[-1][1])
+
             if best_loss > curve_data[-1][1]:
                 best_loss = curve_data[-1][1]
 
@@ -245,7 +248,7 @@ class BOPredictiveSimulator:
                 epoch_time = epoch_time.mean()
 
             metrics['saved_time'] += epoch_time * uepochs_avoided
-            metrics['total_time'] += ureal_epochs * uepochs_avoided
+            metrics['total_time'] += epoch_time * ureal_epochs
 
             # Recuperamos el train__time real mapeando al DataFrame original que guardamos
             # Nota: para simplificar la lectura, asumimos que se inyecta o se lee directamente
@@ -280,7 +283,7 @@ class BOPredictiveSimulator:
             logging.info("All trials pruned!")
             filter_best_loss = worst_loss
 
-        rank_loss_idx = sorted(self.Xexp.groupby('unit').final_val_loss.max().values).index(filter_best_loss)
+        rank_loss_idx = sorted(all_losses).index(filter_best_loss)
 
         return filter_best_loss, real_best_loss, rank_loss_idx, metrics
 

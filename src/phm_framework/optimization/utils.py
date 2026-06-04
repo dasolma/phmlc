@@ -536,7 +536,7 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
 
         hashes = []
         datas = []
-        num_folds = 2 if debug else 3
+        num_folds = 1 if debug else 3
         csv_config = None
         LOCK_FILE = os.path.join(output_dir, 'net.lock')
 

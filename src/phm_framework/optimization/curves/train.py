@@ -1121,12 +1121,13 @@ def prepare_decision_data(model, results, support_gen, ts_len, data_gen, debug=F
         edata = sorted(edata, key=lambda x: ordered_experiments.index(x[0]))
 
         best = edata[0][-1]
+        best_val_curve = edata[0][4][:, 1]
 
         r = edata[0]
         ext_data.append({
             'epoch': -1,
             'unit': r[0],
-            'final_performance': r[-1],
+            #'final_performance': r[-1],
             'best_performance': None,
             'val_performance': None,
             'train_performance': None,
@@ -1139,20 +1140,28 @@ def prepare_decision_data(model, results, support_gen, ts_len, data_gen, debug=F
             continue_run = r[-1] < best
 
             for e in range(len(r[1])):
+                current_val = r[1][-1][e][1]
+
+                best_val_at_same_epoch = best_val_curve[min(e, len(best_val_curve) - 1)]
+
+                should_continue_at_epoch = current_val <= (best_val_at_same_epoch * 1.05)
+
                 ext_data.append({
-                    'epoch': e,
+                    'epoch': e / len(best_val_curve),
                     'unit': r[0],
-                    'final_performance': r[-1],
+                    #'final_performance': r[-1],
                     'best_performance': best,
+                    'best_val_at_epoch': best_val_at_same_epoch,
                     'val_performance': r[1][-1][e][1],
                     'train_performance': r[1][-1][e][0],
-                    'continue': continue_run,
+                    'continue': should_continue_at_epoch, #continue_run,
                     'predicted_performance': r[2][e],
                     'prediction_uncertainty': r[3][e]
                 })
 
-            if continue_run:
+            if best > r[-1]:
                 best = r[-1]
+                best_val_curve = r[4][:, 1]
 
     # Create decisión tree rule
     X = pd.DataFrame(ext_data)
