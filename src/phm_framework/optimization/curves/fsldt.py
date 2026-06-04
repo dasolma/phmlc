@@ -178,17 +178,16 @@ class BOPredictiveSimulator:
         }
 
         best_loss = np.inf
+        filter_best_loss = np.inf
+        worst_loss = 0
 
-        # Condición inicial: Unidad base del histórico (Unidad 0)
-        init_unit = self.unit_ordered[0]
-        filter_best_loss = self.Xexp[self.Xexp.unit == init_unit].final_val_loss.iloc[0]
 
         # Configurar Optuna de forma aislada
         sampler = optuna.samplers.TPESampler(seed=seed)
         study = optuna.create_study(direction="minimize" if self.minimize else "maximize", sampler=sampler)
 
         def objective(trial):
-            nonlocal filter_best_loss
+            nonlocal filter_best_loss, best_loss, worst_loss
 
             # 1. Sugerir hiperparámetros
             suggested = {}
@@ -205,7 +204,10 @@ class BOPredictiveSimulator:
 
             # Best loss
             if best_loss > curve_data[-1][1]:
-                best_loss == curve_data[-1][1]
+                best_loss = curve_data[-1][1]
+
+            if worst_loss < curve_data[-1][1]:
+                worst_loss = curve_data[-1][1]
 
             # 3. Evaluar simulación de parada con el clasificador
             decision_data = self.Xexp[self.Xexp.unit == unit].sort_values('epoch')
@@ -268,11 +270,16 @@ class BOPredictiveSimulator:
                 return final_loss
 
         # Lanzar optimización para los ensayos restantes (N - 1)
-        n_trials = min(99, len(self.unit_ordered) - 1)
+        n_trials = min(100, len(self.unit_ordered))
         if n_trials > 0:
             study.optimize(objective, n_trials=n_trials)
 
         real_best_loss = best_loss #self.Xexp.best_performance.min()
+
+        if filter_best_loss == np.inf:  # se podaron todas!
+            logging.info("All trials pruned!")
+            filter_best_loss = worst_loss
+
         rank_loss_idx = sorted(self.Xexp.groupby('unit').final_val_loss.max().values).index(filter_best_loss)
 
         return filter_best_loss, real_best_loss, rank_loss_idx, metrics
