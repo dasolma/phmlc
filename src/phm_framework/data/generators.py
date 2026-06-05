@@ -574,6 +574,7 @@ def load_train_net_generators_v2(dataset_name: str, task_name, fold: int, num_fo
 
     # load
     X = task.load()[0]
+    """
     X.loc[X.train_loss > 8, 'train_loss'] = 8.0
     X['max_train_loss'] = X.groupby(['unit', 'dataset', 'task', 'net'])['val_loss'].transform('max')
     X['train_loss'] =  X['train_loss'] / X['max_train_loss']
@@ -581,6 +582,27 @@ def load_train_net_generators_v2(dataset_name: str, task_name, fold: int, num_fo
     X['val_loss'] = X['val_loss'] / X['max_train_loss']
     del X['max_train_loss']
     X['num_epochs'] = X['num_epochs'] / 100
+    """
+
+    # Usamos un clip inferior para evitar infinitos en losses perfectos (0.0)
+    X['train_loss_log'] = np.log10(X['train_loss'].clip(lower=1e-6))
+    X['val_loss_log'] = np.log10(X['val_loss'].clip(lower=1e-6))
+
+    # 2. Calculamos el mínimo y máximo de la escala LOGARÍTMICA para cada trial independiente
+    group_cols = ['unit', 'dataset', 'task', 'net']
+    X['min_val_log'] = X.groupby(group_cols)['val_loss_log'].transform('min')
+    X['max_val_log'] = X.groupby(group_cols)['val_loss_log'].transform('max')
+
+    # 3. Escalamos Min-Max en el espacio logarítmico (Rango 0 a 1)
+    # Esto asegura que todas las curvas empiecen en 1.0 (peor momento) y bajen hacia 0.0 (su mejor momento)
+    # Evitamos la división por cero si max == min con un pequeño épsilon
+    denom = (X['max_val_log'] - X['min_val_log']).clip(lower=1e-6)
+    X['val_loss'] = (X['val_loss_log'] - X['min_val_log']) / denom
+    X['train_loss'] = (X['train_loss_log'] - X['min_val_log']) / denom
+
+    # Limpieza de temporales y escala de épocas
+    X['epoch_norm'] = X['num_epochs'] / 100.0
+    X.drop(columns=['min_val_log', 'max_val_log', 'train_loss_log', 'val_loss_log'], inplace=True)
 
     # split
     dataset_names = X.dataset.unique()

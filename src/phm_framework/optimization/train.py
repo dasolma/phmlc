@@ -117,7 +117,7 @@ def train_loop(lr):
                         },
 
                         'train': {
-                            'epochs': 1 if args.debug else 100,
+                            'epochs': 100 if args.debug else 100,
                             'batch_size': 32,
                             'timeout': 60 * 30,
                             'ts_len': ts_len,

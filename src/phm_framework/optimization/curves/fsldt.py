@@ -480,7 +480,7 @@ class BOPredictiveSimulator:
                     g_metrics[k] += l_metrics[k]
 
         # Calcular Scores finales
-        performance_score = np.mean([r / f for r, f in zip(real_best_losses, filter_best_losses)])
+        performance_score = np.mean([1.0 if f == 0 else r / f for r, f in zip(real_best_losses, filter_best_losses)])
         total_epochs = max(1, g_metrics["total_epochs"])
         time_score = g_metrics["epochs_avoided"] / total_epochs
         #score = (0.5 * performance_score + 0.5 * time_score)
@@ -625,8 +625,8 @@ def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout)
                       run_eagerly=False)
 
         # train
-        es = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=8)
-        rlr = tf.keras.callbacks.ReduceLROnPlateau(patience=3)
+        es = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=10)
+        rlr = tf.keras.callbacks.ReduceLROnPlateau(patience=8)
 
         extra_callbacks = []
 
@@ -694,12 +694,12 @@ def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, dir
 
     rules_founds = []
     params = itertools.product([0.45, 0.6, 0.75, 0.9],   #np.arange(0.45, 1.0, 0.05),
-                                [2, 3, 4],
+                                [4, 6, 8],
                                 [50, 100, 200],
                                 [10, 30, 60, 90] #range(10, 100, 10)
                                )
     if debug:
-        params = [(0.45,2,50,10)]
+        params = [(0.45,7,50,10)]
     for negative_class_threshold, max_depth, min_samples, w in params:
 
         # 1. Entrenar un árbol candidato con los datos de todos los folds
@@ -708,6 +708,13 @@ def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, dir
         params['max_depth'] = max_depth
         params['continue_weight'] = w
         candidate_tree, tacc, facc = train_rule_tree(X_train, Y_train, params, negative_class_threshold)
+
+        importances = pd.DataFrame({
+            'Feature': candidate_tree.feature_names_in_,
+            'Importance': candidate_tree.feature_importances_
+        }).sort_values('Importance', ascending=False)
+
+        print(importances)
 
         # avoided previously run simulations
         rules = export_text(candidate_tree, feature_names=candidate_tree.feature_names_in_)
