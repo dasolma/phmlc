@@ -287,6 +287,107 @@ class BOPredictiveSimulator:
 
         return filter_best_loss, real_best_loss, rank_loss_idx, metrics
 
+    def run_once(self, seed: int = 42) -> Tuple[float, float, int, Dict]:
+        """
+        Ejecuta la simulación reproduciendo los trials en el mismo orden cronológico
+        en el que ocurrieron en la ejecución real mediante un bucle nativo.
+        """
+        # Inicializadores de métricas locales
+        metrics = {
+            "epochs_avoided": 0,
+            "total_epochs": 0,
+            "total_train_time": 0,
+            "saved_time": 0,
+            "total_time": 0,
+            "num_prunings": 0,
+            "num_runs": 0
+        }
+
+        best_loss = np.inf
+        filter_best_loss = np.inf
+        worst_loss = 0
+        all_losses = []
+
+        # Determinamos cuántos trials vamos a reproducir (máximo 100)
+        n_trials = min(100, len(self.unit_ordered))
+
+        # 1. El bucle nativo que reemplaza a study.optimize()
+        for idx in range(n_trials):
+            unit = self.unit_ordered[idx]
+            curve_data = self.curves_dict[unit]
+
+            # Guardar pérdidas para el histórico
+            final_trial_loss = curve_data[-1][1]
+            all_losses.append(final_trial_loss)
+
+            if best_loss > final_trial_loss:
+                best_loss = final_trial_loss
+
+            if worst_loss < final_trial_loss:
+                worst_loss = final_trial_loss
+
+            # 2. Evaluar simulación de parada con el clasificador
+            decision_data = self.Xexp[self.Xexp.unit == unit].sort_values('epoch')
+            preds = decision_data.pred.values
+            ureal_epochs = len(curve_data)
+
+            patience = 3
+            stop_counter = 0
+            final_stop_epoch = ureal_epochs
+            is_pruned = False
+
+            for i, p in enumerate(preds):
+                if not p:
+                    stop_counter += 1
+                else:
+                    stop_counter = 0
+
+                if stop_counter >= patience:
+                    final_stop_epoch = i + 1
+                    is_pruned = True
+                    break
+
+            epochs_to_run = final_stop_epoch if is_pruned else ureal_epochs
+            uepochs_avoided = ureal_epochs - epochs_to_run
+
+            # Acumular métricas
+            metrics["total_epochs"] += ureal_epochs
+            metrics["epochs_avoided"] += uepochs_avoided
+
+            # Obtener el tiempo de entrenamiento
+            epoch_time = self.exp_hp_df.loc[unit].train__time
+            if hasattr(epoch_time, "__len__") and not isinstance(epoch_time, str):
+                epoch_time = epoch_time.mean()
+
+            metrics['saved_time'] += epoch_time * uepochs_avoided
+            metrics['total_time'] += epoch_time * ureal_epochs
+
+            metrics["num_runs"] += 1
+            if is_pruned:
+                metrics["num_prunings"] += 1
+
+            # 3. Lógica del filtro de pérdida
+            if is_pruned:
+                # Si está podado, su pérdida se congela en el momento de la parada
+                # Nota: Asegúrate de indexar correctamente según tu estructura (ej: final_stop_epoch - 1)
+                pruned_loss = curve_data[final_stop_epoch - 1][1]
+                # La pérdida podada no compite por ser la mejor real, pero sí afecta al progreso
+            else:
+                # Si completó el entrenamiento, compite por ser el mejor filter_best_loss
+                if final_trial_loss < filter_best_loss:
+                    filter_best_loss = final_trial_loss
+
+        # 4. Control de seguridad por si se podaron absolutamente todos los trials
+        real_best_loss = best_loss
+
+        if filter_best_loss == np.inf:
+            logging.info("All trials pruned!")
+            filter_best_loss = worst_loss
+
+        rank_loss_idx = sorted(all_losses).index(filter_best_loss)
+
+        return filter_best_loss, real_best_loss, rank_loss_idx, metrics
+
     @classmethod
     def run_all_experiments(
             cls,
