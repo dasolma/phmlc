@@ -1172,7 +1172,8 @@ def prepare_decision_data(model, results, support_gen, ts_len, data_gen, debug=F
     X['val_improvement'] = ((X.val_performance - X.best_performance) / X.best_performance).clip(-1, 1)
 
     X = X[['unit', 'epoch', 'best_performance', 'expected_improvement', 'val_improvement',
-           'prediction_uncertainty', 'val_performance', 'predicted_performance']]
+           'prediction_uncertainty', 'val_performance', 'predicted_performance',
+           'best_val_at_epoch']]
 
     return X, Y, data
 
@@ -1193,7 +1194,7 @@ def extended_decision_data(model, results, support_gen, ts_len, data_gen, debug=
 
     features = ['unit', 'epoch', 'expected_improvement', 'val_improvement',
                 'prediction_uncertainty', 'val_velocity', 'val_ema', 'best_performance',
-                'continue']
+                'best_val_at_epoch', 'continue']
     X = X[features]
     X = X[~X.T.isnull().any()]
 
