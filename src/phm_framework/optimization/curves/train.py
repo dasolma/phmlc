@@ -1195,6 +1195,8 @@ def extended_decision_data(model, results, support_gen, ts_len, data_gen, debug=
     features = ['unit', 'epoch', 'expected_improvement', 'val_improvement',
                 'prediction_uncertainty', 'val_velocity', 'val_ema', 'best_performance',
                 'best_val_at_epoch', 'continue']
+    features = ['unit', 'epoch', 'expected_improvement',
+                'prediction_uncertainty', 'continue']
     X = X[features]
     X = X[~X.T.isnull().any()]
 

@@ -694,7 +694,7 @@ def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, dir
 
     rules_founds = []
     params = itertools.product([0.45, 0.6, 0.75, 0.9],   #np.arange(0.45, 1.0, 0.05),
-                                [4, 6, 8],
+                                [2, 3, 4],
                                 [50, 100, 200],
                                 [10, 30, 60, 90] #range(10, 100, 10)
                                )
