@@ -515,9 +515,15 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
 
         X = task.load()[0]
         dataset_names = X.dataset.unique()
+
+
         random.shuffle(dataset_names)
+
+        EXCLUDED_DATASETS = ['UNIBO21', 'OBDD17', 'UOC18']
+
         train_end_index = int(len(dataset_names) * 0.4)
         test_dataset_names = dataset_names[train_end_index:]
+        test_dataset_names = [d for d in test_dataset_names if d not in EXCLUDED_DATASETS]
 
         del X
         experiment_config['data']['test_dataset_names'] = test_dataset_names
