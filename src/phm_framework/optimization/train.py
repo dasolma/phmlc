@@ -148,7 +148,7 @@ def train_loop(lr):
                     }
 
 
-                    train()
+                    train(config)
 
 
     elif args.model in ['hb', 'bohb']:
