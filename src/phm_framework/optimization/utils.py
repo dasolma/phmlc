@@ -332,6 +332,8 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
         target = experiment_config['data']['dataset_target']
         random_state = training_config["random_state"]
 
+        random.seed(random_state)
+
         # extract test datasets
         ds = phmd.datasets.Dataset(data_name)
         task = ds['final_loss']  # Retrieve task-specific details
@@ -340,6 +342,7 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
 
         X = task.load()[0]
         dataset_names = X.dataset.unique()
+
         random.shuffle(dataset_names)
         train_end_index = int(len(dataset_names) * 0.4)
         test_dataset_names = dataset_names[train_end_index:]
