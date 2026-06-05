@@ -495,6 +495,7 @@ class BOPredictiveSimulator:
             csv_config["rank_losses"] = rank_losses
             csv_config["saved_time"] = saved_time
             csv_config["total_time"] = total_time
+            csv_config["saved_pct_per_exp"] = epochs_saved_pct
             csv_config["train__status"] = "FINISHED"
             csv_config["score"] = score
 

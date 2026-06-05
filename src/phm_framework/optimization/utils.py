@@ -461,7 +461,7 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
         optimal_tree, tree_params, val_sim_score, val_best_rank, val_rank_pct, epochs_saved_pct = \
             find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir, debug)
         csv_config['mean_train_val_score'] = val_sim_score
-        csv_config['mean_train_rank'] = val_sim_score
+        csv_config['mean_train_rank'] = val_best_rank
         csv_config['train_rank_pct'] = val_rank_pct
         csv_config['train_epochs_saved_pct'] = epochs_saved_pct
 

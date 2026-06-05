@@ -148,7 +148,7 @@ def train_loop(lr):
                     }
 
 
-                    train(config)
+                    train()
 
 
     elif args.model in ['hb', 'bohb']:
@@ -477,7 +477,7 @@ if __name__ == "__main__":
 
         isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'fsldt', 'hb', 'bohb']
         if isnet(args.model):
-            random_states = [29, 8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444]
+            random_states = [8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444, 29]
 
             for random_state in random_states:
                 train_loop(args.lr)
