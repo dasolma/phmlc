@@ -574,7 +574,6 @@ def load_train_net_generators_v2(dataset_name: str, task_name, fold: int, num_fo
 
     # load
     X = task.load()[0]
-    """
     X.loc[X.train_loss > 8, 'train_loss'] = 8.0
     X['max_train_loss'] = X.groupby(['unit', 'dataset', 'task', 'net'])['val_loss'].transform('max')
     X['train_loss'] =  X['train_loss'] / X['max_train_loss']
@@ -599,11 +598,11 @@ def load_train_net_generators_v2(dataset_name: str, task_name, fold: int, num_fo
     denom = (X['max_val_log'] - X['min_val_log']).clip(lower=1e-6)
     X['val_loss'] = (X['val_loss_log'] - X['min_val_log']) / denom
     X['train_loss'] = (X['train_loss_log'] - X['min_val_log']) / denom
-
+    
     # Limpieza de temporales y escala de épocas
     X['epoch_norm'] = X['num_epochs'] / 100.0
     X.drop(columns=['min_val_log', 'max_val_log', 'train_loss_log', 'val_loss_log'], inplace=True)
-
+    """
     # split
     dataset_names = X.dataset.unique()
 

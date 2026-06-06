@@ -625,8 +625,8 @@ def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout)
                       run_eagerly=False)
 
         # train
-        es = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=10)
-        rlr = tf.keras.callbacks.ReduceLROnPlateau(patience=8)
+        es = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=8)
+        rlr = tf.keras.callbacks.ReduceLROnPlateau(patience=3)
 
         extra_callbacks = []
 
