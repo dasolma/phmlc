@@ -653,13 +653,14 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
 
             # Curves
             curves = pk.load(open(datas[0], 'rb'))[1]
-            optimal_tree, tree_params, val_sim_score, val_best_rank, val_rank_pct, epochs_saved_pct = \
+            optimal_tree, tree_params, tree_importances, val_sim_score, val_best_rank, val_rank_pct, epochs_saved_pct = \
                 find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, output_dir, debug)
             csv_config['mean_train_val_score'] = val_sim_score
             csv_config['mean_train_rank'] = val_best_rank
             csv_config['train_rank_pct'] = val_rank_pct
             csv_config['train_epochs_saved_pct'] = epochs_saved_pct
             csv_config['best_tree_prams'] = tree_params
+            csv_config['tree_importances'] = tree_importances
 
             test_datasets = datasets[2 * ndatasets:]
             X_test = X[X.unit.map(lambda x: x[:[c.islower() for c in x].index(True)] in test_datasets)]

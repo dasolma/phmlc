@@ -688,13 +688,14 @@ def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, dir
     best_params = None
     best_rank = None
     best_rank_pct = None
+    best_importances = None
 
     print(f"ACC(T)\tACC(F)\tScore\tPerf.Score\tT.Score")
     print(f"------\t------\t-----\t----------\t-------")
 
     rules_founds = []
     params = itertools.product([0.45, 0.6, 0.75, 0.9],   #np.arange(0.45, 1.0, 0.05),
-                                [2, 3, 4],
+                                [4, 6, 8],
                                 [50, 100, 200],
                                 [10, 30, 60, 90] #range(10, 100, 10)
                                )
@@ -713,7 +714,7 @@ def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, dir
             'Feature': candidate_tree.feature_names_in_,
             'Importance': candidate_tree.feature_importances_
         }).sort_values('Importance', ascending=False)
-
+        importances = {n: i for n, i in zip(candidate_tree.feature_names_in_, candidate_tree.feature_importances_)}
         print(importances)
 
         # avoided previously run simulations
@@ -733,12 +734,14 @@ def find_optimal_strategy_tree(X_train, Y_train, X_val, curves, opt_history, dir
             best_score = current_strategy_score
             best_tree = candidate_tree
             best_params = copy.deepcopy(params)
+            best_params['negative_class_threshold'] = negative_class_threshold
             best_rank = mean_rank
             best_rank_pct = mean_rank_pct
+            best_importances = importances
             print("*")
         else:
             print("")
 
 
-    return best_tree, best_params, best_score, best_rank, best_rank_pct, epochs_saved_pct
+    return best_tree, best_params, best_importances, best_score, best_rank, best_rank_pct, epochs_saved_pct
 
