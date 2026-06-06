@@ -90,12 +90,14 @@ def train_loop(lr):
                 train(config)
 
     elif args.model in ['protonet', 'protonetv2', 'fsldt']:
+        random_states = [8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444, 29]
         nblocks = [1, 2, 3, 4]
         embedding_dims = [16, 32, 64, 128, 256]
         block_sizes = [1, 2, 3]
 
         processes = []
-        for nblocks, embedding_dim, block_size in itertools.product(nblocks, embedding_dims, block_sizes):
+        for nblocks, embedding_dim, block_size, random_state in \
+                itertools.product(nblocks, embedding_dims, block_sizes, random_states):
                 ts_len_range = [21] if args.model == 'fsldt' else range(5, 21, 5)
                 for ts_len in ts_len_range:
 
@@ -477,10 +479,7 @@ if __name__ == "__main__":
 
         isnet = lambda x: x in ['rnn', 'rnn_cond', 'protonet', 'protonetv2', 'fsldt', 'hb', 'bohb']
         if isnet(args.model):
-            random_states = [8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444, 29]
-
-            for random_state in random_states:
-                train_loop(args.lr)
+            train_loop(args.lr)
 
         elif args.model == 'arima' or args.model == 'last-seen':
             train_loop(None)
