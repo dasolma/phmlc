@@ -483,6 +483,10 @@ def parameter_opt_cv_fsldt(model_creator: Callable,
         log_train(csv_config, output_dir)
         save_tree(arch_hash, optimal_tree, output_dir, tree_params)
 
+        for path in datas:
+            if os.path.exists(path):
+                os.remove(path)
+
     except Exception as ex:
         logging.error("Error: %s" % ex)
         logging.error(traceback.format_exc())

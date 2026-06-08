@@ -89,7 +89,73 @@ def train_loop(lr):
 
                 train(config)
 
-    elif args.model in ['protonet', 'protonetv2', 'fsldt']:
+
+    elif args.model in ['fsldt']:
+        random_states = [8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444, 29]
+        nblocks = [1, 2]
+        embedding_dims = [8, 16]
+        block_sizes = [1, 2, 3]
+
+        processes = []
+        for nblocks, embedding_dim, block_size, random_state in \
+                itertools.product(nblocks, embedding_dims, block_sizes, random_states):
+                ts_len_range = [21] if args.model == 'fsldt' else range(5, 21, 5)
+                for ts_len in ts_len_range:
+
+                    config = {
+                        'model': {
+                            'net': args.model,
+                            'output_dim': hp.get_output_dim(task),
+                            'output': "relu",
+                            'nblocks': nblocks,
+                            'embedding_dim': embedding_dim,
+                            'block_size': block_size,
+                        },
+
+                        'data': {
+                            'dataset_name': dataset,
+                            'dataset_target': task_name,
+                            'low_float_precision': True,
+                            'preprocess': None,
+                        },
+
+                        'train': {
+                            'epochs': 100 if args.debug else 100,
+                            'batch_size': 32,
+                            'timeout': 60 * 30,
+                            'ts_len': ts_len,
+                            'lr': lr,
+                            'verbose': True,
+                            'num_folds': min(5, max_folds),
+                            'random_state': random_state,
+                            'stop_criteria': False,
+                            'conditioning': args.features,
+                            'debug': args.debug,
+                            'use_current_train_curves': True,
+                        },
+
+                        'train_generator': {
+                            'random_init': False,
+                        },
+
+                        'val_generator': {
+                            'random_init': False,
+                        },
+
+                        'log': {
+                            'directory': args.output,
+                            'save_only_best': True
+                        },
+
+                        'train__stride': 0.,
+                    }
+
+
+                    train(config)
+
+
+
+    elif args.model in ['protonet', 'protonetv2']:
         random_states = [8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444, 29]
         nblocks = [1, 2, 3, 4]
         embedding_dims = [16, 32, 64, 128, 256]
@@ -155,62 +221,68 @@ def train_loop(lr):
 
     elif args.model in ['hb', 'bohb']:
 
+        random_states = [29, 8162, 1391, 2821, 3709, 106, 4665, 7204, 6321, 8444]
         processes = []
 
-        for ts_len in range(5, 21, 5):
+        for random_state in random_states:
 
-            config = {
-                'model': {
-                    'net': args.model,
-                    'output_dim': hp.get_output_dim(task),
-                    'output': "relu",
-                },
+            for ts_len in range(5, 21, 5):
 
-                'data': {
-                    'dataset_name': dataset,
-                    'dataset_target': task_name,
-                    'low_float_precision': True,
-                    'preprocess': None,
-                },
+                config = {
+                    'model': {
+                        'net': args.model,
+                        'output_dim': hp.get_output_dim(task),
+                        'output': "relu",
+                    },
 
-                'train': {
-                    'epochs': 1 if args.debug else 100,
-                    'batch_size': 32,
-                    'timeout': 60 * 30,
-                    'ts_len': 9 if args.debug else ts_len,
-                    'lr': lr,
-                    'verbose': True,
-                    'num_folds': min(5, max_folds),
-                    'random_state': random_state,
-                    'debug': args.debug,
-                    'use_current_train_curves': True,
-                },
+                    'data': {
+                        'dataset_name': dataset,
+                        'dataset_target': task_name,
+                        'low_float_precision': True,
+                        'preprocess': None,
+                    },
 
-                'train_generator': {
-                    'random_init': False,
-                },
+                    'train': {
+                        'epochs': 1 if args.debug else 100,
+                        'batch_size': 32,
+                        'timeout': 60 * 30,
+                        'ts_len': 9 if args.debug else ts_len,
+                        'lr': lr,
+                        'verbose': True,
+                        'num_folds': min(5, max_folds),
+                        'random_state': random_state,
+                        'debug': args.debug,
+                        'use_current_train_curves': True,
+                    },
 
-                'val_generator': {
-                    'random_init': False,
-                },
+                    'train_generator': {
+                        'random_init': False,
+                    },
 
-                'log': {
-                    'directory': args.output,
-                    'save_only_best': True
-                },
+                    'val_generator': {
+                        'random_init': False,
+                    },
 
-            }
+                    'log': {
+                        'directory': args.output,
+                        'save_only_best': True
+                    },
+
+                }
+
+                if args.debug:
+                    train(config)
+                else:
+                    p = multiprocessing.Process(target=train, args=(config,))
+                    p.start()
+                    processes.append(p)
+                    time.sleep(5)
 
 
-            p = multiprocessing.Process(target=train, args=(config,))
-            p.start()
-            processes.append(p)
-            time.sleep(5)
-
-            #train(config)
-
-        for p in processes:
-            p.join()
+                #train(config)
+        if not args.debug:
+            for p in processes:
+                p.join()
 
 
 
