@@ -45,7 +45,7 @@ class BOHBSimulator:
         self.unit_params = unit_params
         self.unit_times = unit_times
         self.all_units = list(val_curves.keys())
-        self.R = R or int(max(len(c) for c in val_curves.values()))
+        self.R = R or int(np.mean([len(c) for c in val_curves.values()]))
         self.eta = eta
         self.minimize = minimize
 
@@ -432,7 +432,7 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
         logging.info("Hyperband CV: optimizing R and eta")
 
         best = None
-        R = 100
+        R = None
         for eta in eta_grid:
 
             results = BOHBSimulator.run_all_groups(
