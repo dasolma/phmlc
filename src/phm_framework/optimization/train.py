@@ -225,8 +225,6 @@ def train_loop(lr):
 
         for random_state in random_states:
 
-            for ts_len in range(5, 21, 5):
-
                 config = {
                     'model': {
                         'net': args.model,
@@ -245,7 +243,6 @@ def train_loop(lr):
                         'epochs': 1 if args.debug else 100,
                         'batch_size': 32,
                         'timeout': 60 * 30,
-                        'ts_len': 9 if args.debug else ts_len,
                         'lr': lr,
                         'verbose': True,
                         'num_folds': min(5, max_folds),
