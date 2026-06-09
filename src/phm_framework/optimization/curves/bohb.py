@@ -158,7 +158,7 @@ class BOHBSimulator:
                     mc_results[col] = val
                 return mc_results
             except Exception as exc:
-                print(f"[BOHBSimulator] Grupo {key_dict} omitido: {exc}")
+                logging.info(f"[BOHBSimulator] Grupo {key_dict} omitido: {exc}")
                 return None
 
         # ══════ EJECUCIÓN EN PARALELO ══════
@@ -308,7 +308,7 @@ class BOHBSimulator:
 
         rank = sorted([np.array(self.val_curves[u]).min() for u in sampled_units_all])
         rank = [r >= best_loss for r in rank].index(True)
-        print(f"Best uid {best_uid}, Best loss: {best_loss}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
+        logging.info(f"Best uid {best_uid}, Best loss: {best_loss}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
 
         performance_score = real_best_loss / best_loss  # lower is better
 
@@ -425,8 +425,6 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
             mean_rp = results["val_score"].mean()
             if best is None or mean_rp > best["rank_pct"]:
                 best = {"R": R, "eta": eta, "rank_pct": mean_rp}
-
-                print(best)
 
         best_R   = best['R']
         best_eta = best['eta']
