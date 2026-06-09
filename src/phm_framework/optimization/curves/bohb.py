@@ -163,7 +163,7 @@ class BOHBSimulator:
 
         # ══════ EJECUCIÓN EN PARALELO ══════
         # Distribuye los grupos automáticamente entre tus cores de la CPU
-        if debug:
+        if not debug:
             results_list = Parallel(n_jobs=n_jobs)(
                 delayed(_process_single_group)(keys, group_df) for keys, group_df in grouped
             )
@@ -281,6 +281,7 @@ class BOHBSimulator:
 
             uid = self._find_closest_unit(suggested, sampled_units_all)
 
+
             sampled_units_all.append(uid)
             curve = self.val_curves[uid]
             unit_time = self.unit_times[uid]
@@ -310,6 +311,7 @@ class BOHBSimulator:
                     if trial.should_prune():
                         raise optuna.TrialPruned()
 
+            epochs_used += len(curve) - epochs_used
             if best_loss > curve[-1]:
                 best_uid = uid
                 best_loss = curve[-1]
@@ -444,8 +446,8 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
                 debug=debug,
             )
             mean_rp = results["val_score"].mean()
-            if best is None or mean_rp > best["rank_pct"]:
-                best = {"R": R, "eta": eta, "rank_pct": mean_rp}
+            if best is None or mean_rp > best["val_score"]:
+                best = {"R": R, "eta": eta, "val_score": mean_rp}
 
         best_R   = best['R']
         best_eta = best['eta']
