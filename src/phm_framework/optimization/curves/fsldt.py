@@ -613,30 +613,34 @@ def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout)
         del model_params['output_dim']
         del model_params['input_shape']
         del model_params['output']
-        model = model_creator(input_shape, output_dim=output_dim, output=output,
-                              **model_params)
-        logging.info("Model created")
-        model.summary(print_fn=lambda x: logging.info(x))
+        if net_config['net'] != 'dt':
+            model = model_creator(input_shape, output_dim=output_dim, output=output,
+                                  **model_params)
+            logging.info("Model created")
+            model.summary(print_fn=lambda x: logging.info(x))
 
-        model.compile(loss='mse',
-                      metrics=[tf.keras.metrics.RootMeanSquaredError(name='rmse'),
-                               tf.keras.metrics.MeanAbsoluteError(name="mae")],
-                      optimizer=tf.keras.optimizers.Adam(learning_rate=lr),
-                      run_eagerly=False)
+            model.compile(loss='mse',
+                          metrics=[tf.keras.metrics.RootMeanSquaredError(name='rmse'),
+                                   tf.keras.metrics.MeanAbsoluteError(name="mae")],
+                          optimizer=tf.keras.optimizers.Adam(learning_rate=lr),
+                          run_eagerly=False)
 
-        # train
-        es = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=8)
-        rlr = tf.keras.callbacks.ReduceLROnPlateau(patience=3)
+            # train
+            es = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=8)
+            rlr = tf.keras.callbacks.ReduceLROnPlateau(patience=3)
 
-        extra_callbacks = []
+            extra_callbacks = []
 
-        logging.info("Started training")
+            logging.info("Started training")
 
-        history = model.fit(train_gen, validation_data=val_gen,
-                            batch_size=batch_size,
-                            epochs=epochs, verbose=(2 if verbose else 0),
-                            callbacks=[es, rlr] + extra_callbacks)
-        history = history.history
+            history = model.fit(train_gen, validation_data=val_gen,
+                                batch_size=batch_size,
+                                epochs=epochs, verbose=(2 if verbose else 0),
+                                callbacks=[es, rlr] + extra_callbacks)
+            history = history.history
+        else:
+            model = None
+            history = None
 
         # discretize data
         Xtest, Ytest, curves = extended_decision_data(model, results, train_gen, ts_len, test_gen, debug=debug)
@@ -647,6 +651,7 @@ def curves_fsldt(model_creator, config, ifold, queue, debug, directory, timeout)
         if not os.path.exists(data_dir): os.makedirs(data_dir)
         data_file = os.path.join(data_dir, f'test_{nhash}.data')
         pk.dump((Xtest, curves), open(data_file, 'wb'))
+
 
         queue.put((history, arch_hash, data_file, csv_config))
 

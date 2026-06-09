@@ -1146,6 +1146,7 @@ def prepare_decision_data(model, results, support_gen, ts_len, data_gen, debug=F
 
                 should_continue_at_epoch = current_val <= (best_val_at_same_epoch * 1.05)
 
+
                 ext_data.append({
                     'epoch': e / len(best_val_curve),
                     'unit': r[0],
@@ -1155,8 +1156,8 @@ def prepare_decision_data(model, results, support_gen, ts_len, data_gen, debug=F
                     'val_performance': r[1][-1][e][1],
                     'train_performance': r[1][-1][e][0],
                     'continue': should_continue_at_epoch, #continue_run,
-                    'predicted_performance': r[2][e],
-                    'prediction_uncertainty': r[3][e]
+                    'predicted_performance': r[2][e] if model is not None else None,
+                    'prediction_uncertainty': r[3][e] if model is not None else None
                 })
 
             if best > r[-1]:
@@ -1167,9 +1168,13 @@ def prepare_decision_data(model, results, support_gen, ts_len, data_gen, debug=F
     X = pd.DataFrame(ext_data)
     Y = X['continue']
 
-    X['expected_improvement'] = ((X.predicted_performance - X.best_performance) / X.best_performance).clip(-1, 1)
+    if model is not None:
+        X['expected_improvement'] = ((X.predicted_performance - X.best_performance) / X.best_performance).clip(-1, 1)
+    else:
+        X['expected_improvement'] = None
 
     X['val_improvement'] = ((X.val_performance - X.best_performance) / X.best_performance).clip(-1, 1)
+
 
     X = X[['unit', 'epoch', 'best_performance', 'expected_improvement', 'val_improvement',
            'prediction_uncertainty', 'val_performance', 'predicted_performance',
@@ -1192,11 +1197,16 @@ def extended_decision_data(model, results, support_gen, ts_len, data_gen, debug=
     # Feature set ampliado
     logging.info(f"Before remove rows with nulls. Shape: {X.shape}")
 
-    features = ['unit', 'epoch', 'expected_improvement', 'val_improvement',
-                'prediction_uncertainty', 'val_velocity', 'val_ema', 'best_performance',
-                'best_val_at_epoch', 'continue']
-    #features = ['unit', 'epoch', 'expected_improvement',
-    #            'prediction_uncertainty', 'continue']
+    if model is not None:
+        features = ['unit', 'epoch', 'expected_improvement', 'val_improvement',
+                    'prediction_uncertainty', 'val_velocity', 'val_ema', 'best_performance',
+                    'best_val_at_epoch', 'continue']
+    else:
+        features = ['unit', 'epoch', 'val_improvement',
+                    'val_velocity', 'val_ema', 'best_performance',
+                    'best_val_at_epoch', 'continue']
+
+
     X = X[features]
     X = X[~X.T.isnull().any()]
 
@@ -1336,6 +1346,8 @@ def get_curve_predictions_reusing(model, support_gen, ts_len, data_gen, opt_hist
     preds = np.hstack([preds[i:i + 3] for i in range(0, len(preds), 3)])
     preds, stds = np.mean(preds, axis=0), np.std(preds, axis=0)
 
+    logging.info("Mean preds:", preds.mean(), "Mean stds:", stds.mean())
+
     data = []
     i = 0
     for unit, final_performance, signal, signals in zip(units, final_performances, raw_signals, aux_inputs):
@@ -1382,8 +1394,9 @@ def get_curve_predictions_reusing(model, support_gen, ts_len, data_gen, opt_hist
 
         # Ejecutamos el modelo solo 3 veces para TODO el bloque en lugar de por cada unidad
         preds_block = []
-        for support, sy in zip(supports, sys):
-            preds_block.append(model((concatenated_signals, support, sy)).numpy())
+        if model is not None:
+            for support, sy in zip(supports, sys):
+                preds_block.append(model((concatenated_signals, support, sy)).numpy())
 
         # Desempaquetamos y calculamos estadísticas por unidad
         idx = 0
