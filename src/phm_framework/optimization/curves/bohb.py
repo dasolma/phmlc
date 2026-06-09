@@ -451,8 +451,6 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
 
         best_R   = best['R']
         best_eta = best['eta']
-        logging.info(f"Best params → R={best_R}, eta={best_eta} "
-                     f"(mean_rank_pct={best['rank_pct']:.3f})")
 
         # ── paso 2: Hyperband sobre train completo con los mejores params ─────
         logging.info("Hyperband: running on full train set")
