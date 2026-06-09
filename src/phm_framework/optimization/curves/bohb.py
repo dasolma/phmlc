@@ -163,9 +163,12 @@ class BOHBSimulator:
 
         # ══════ EJECUCIÓN EN PARALELO ══════
         # Distribuye los grupos automáticamente entre tus cores de la CPU
-        results_list = Parallel(n_jobs=n_jobs)(
-            delayed(_process_single_group)(keys, group_df) for keys, group_df in grouped
-        )
+        if debug:
+            results_list = Parallel(n_jobs=n_jobs)(
+                delayed(_process_single_group)(keys, group_df) for keys, group_df in grouped
+            )
+        else:
+            results_list = [_process_single_group(keys, group_df) for keys, group_df in grouped]
 
         # Filtrar los omitidos (None) y concatenar
         records = [r for r in results_list if r is not None]
@@ -200,7 +203,7 @@ class BOHBSimulator:
 
     # ── lógica de optuna (BOHB) ───────────────────────────────────────────────
 
-    def _find_closest_unit(self, suggested_params: dict) -> str:
+    def _find_closest_unit(self, suggested_params: dict, sampled_set : list) -> str:
         """
         Encuentra el unit_id pre-evaluado más cercano a lo que sugiere el TPE.
         Si tu espacio en Optuna es exactamente igual al grid de tus datos,
@@ -217,7 +220,23 @@ class BOHBSimulator:
 
         # Operación matricial broadcasting en C (mucho más rápido que Pandas)
         distances = np.sum((self.matrix_values - suggested_vector) ** 2, axis=1)
-        return self.matrix_uids[np.argmin(distances)]
+
+        # 3. Penalizar los candidatos ya seleccionados mapeando sus índices en la matriz
+        # Creamos una máscara booleana: True para los uids que YA han sido usados
+        used_mask = np.isin(self.matrix_uids, list(sampled_set))
+
+        # Asignamos una distancia infinita a los usados para que np.argmin los ignore por completo
+        distances[used_mask] = np.inf
+
+        # 4. Obtener el índice del mínimo absoluto libre
+        min_idx = np.argmin(distances)
+
+        # Control de seguridad en caso de que nos hayamos quedado sin candidatos en el histórico
+        if distances[min_idx] == np.inf:
+            raise ValueError("Se han agotado todos los candidatos disponibles en el benchmark tabular.")
+
+        return self.matrix_uids[min_idx]
+
 
     def run_once(self, n_trials=50, seed=42):
         """
@@ -240,6 +259,8 @@ class BOHBSimulator:
         baseline_epochs = 0
         real_best_loss = np.inf
         sampled_units_all = list()
+        best_uid = None
+        best_loss = np.inf
         # ══════ OPTIMIZACIÓN DE RUNGS ══════
         # Pre-calcular las épocas exactas donde Hyperband toma decisiones: 1, eta, eta^2, eta^3...
         rungs = set()
@@ -249,7 +270,7 @@ class BOHBSimulator:
             curr_rung *= self.eta
 
         def objective(trial):
-            nonlocal epochs_used, baseline_epochs, real_best_loss, time_used, total_time
+            nonlocal epochs_used, baseline_epochs, real_best_loss, time_used, total_time, best_uid, best_loss
 
             suggested = {}
             for k, v in self.params_ranges.items():
@@ -258,7 +279,8 @@ class BOHBSimulator:
                 else:
                     suggested[k] = trial.suggest_float(k, v[0], v[1], log=v[0] != 0)
 
-            uid = self._find_closest_unit(suggested)
+            uid = self._find_closest_unit(suggested, sampled_units_all)
+
             sampled_units_all.append(uid)
             curve = self.val_curves[uid]
             unit_time = self.unit_times[uid]
@@ -268,6 +290,9 @@ class BOHBSimulator:
 
             last_val_loss = None
             max_steps = min(self.R, len(curve))
+
+            if real_best_loss > curve[-1]:
+                real_best_loss = curve[-1]
 
             for epoch_idx in range(max_steps):
                 step = epoch_idx + 1
@@ -285,28 +310,24 @@ class BOHBSimulator:
                     if trial.should_prune():
                         raise optuna.TrialPruned()
 
-            if real_best_loss > curve[-1]:
-                real_best_loss = curve[-1]
+            if best_loss > curve[-1]:
+                best_uid = uid
+                best_loss = curve[-1]
 
             return last_val_loss
 
         # Ejecutamos la simulación
         warnings.filterwarnings("ignore", category=optuna.exceptions.ExperimentalWarning)
         try:
+            n_trials = min(100, len(self.val_curves)-1)
             study.optimize(objective, n_trials=n_trials)
         except Exception as e:
             pass  # Captura errores por si todos los trials son podados
 
-        # Extraer el mejor resultado
-        best_trial = study.best_trial
-
-        # Recuperamos el unit_id real de los parámetros del mejor trial
-        best_uid = self._find_closest_unit(best_trial.params)
-        best_loss = best_trial.value
 
         baseline_epochs = sum(len(self.val_curves[u]) for u in sampled_units_all)
 
-        rank = sorted([np.array(self.val_curves[u]).min() for u in sampled_units_all])
+        rank = sorted([self.val_curves[u][-1] for u in sampled_units_all])
         rank = [r >= best_loss for r in rank].index(True)
         logging.info(f"Best uid {best_uid}, Best loss: {best_loss}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
 
