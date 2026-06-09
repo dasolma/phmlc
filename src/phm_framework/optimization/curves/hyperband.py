@@ -340,7 +340,6 @@ def hyperband_simulation(config, ifold, queue, debug, directory, timeout):
         test_df  = sets['test']
 
         group_cols  = ["dataset", "task", "net"]
-        R_grid      = training_config.get('hyperband_R_grid',   [9, 27, 81])
         eta_grid    = training_config.get('hyperband_eta_grid', [2, 3])
         n_runs      = training_config.get('hyperband_n_runs',   30)
         hb_seed     = training_config.get('hyperband_seed',     42)

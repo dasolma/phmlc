@@ -32,7 +32,8 @@ class BOHBSimulator:
     def __init__(
             self,
             val_curves: dict,
-            unit_params: dict,  # NUEVO: {unit_id: {'lr': 0.01, 'batch_size': 32, ...}}
+            unit_params: dict,
+            unit_times: dict,
             R: int = None,
             eta: int = 3,
             minimize: bool = True,
@@ -42,6 +43,7 @@ class BOHBSimulator:
 
         self.val_curves = val_curves
         self.unit_params = unit_params
+        self.unit_times = unit_times
         self.all_units = list(val_curves.keys())
         self.R = R or int(max(len(c) for c in val_curves.values()))
         self.eta = eta
@@ -77,6 +79,7 @@ class BOHBSimulator:
             cls,
             group_df: pd.DataFrame,
             unit_params_dict: dict,  # El diccionario global {unit_id: {hp1: v1, ...}}
+            unit_times_dict: dict,
             R: int = None,
             eta: int = 3,
             minimize: bool = True,
@@ -102,6 +105,12 @@ class BOHBSimulator:
             if uid in unit_params_dict
         }
 
+        filtered_unit_times = {
+            uid: unit_times_dict[uid]
+            for uid in group_units
+            if uid in unit_times_dict
+        }
+
         # Control de errores por si alguna unidad no tiene sus hiperparámetros registrados
         missing = group_units - set(filtered_params.keys())
         if missing:
@@ -110,13 +119,15 @@ class BOHBSimulator:
             val_curves = {k: v for k, v in val_curves.items() if k in group_units}
 
         # 3. Inicializamos la clase pasándole únicamente el set de datos de este grupo
-        return cls(val_curves, filtered_params, R=R, eta=eta, minimize=minimize)
+        return cls(val_curves, filtered_params, filtered_unit_times,
+                   R=R, eta=eta, minimize=minimize)
 
     @classmethod
     def run_all_groups(
             cls,
             df: pd.DataFrame,
             unit_params_dict: dict,
+            unit_times_dict: dict,
             group_cols: list = None,
             R: int = None,
             eta: int = 3,
@@ -125,16 +136,21 @@ class BOHBSimulator:
             n_trials: int = 100,  # <-- El budget de trials para Optuna por cada run
             seed: int = 42,
             n_jobs: int = -1,
+            debug: bool = False,
     ) -> pd.DataFrame:
 
         group_cols = group_cols or ["dataset", "task", "net"]
         grouped = list(df.groupby(group_cols, sort=True))
 
+        if debug:
+            grouped = grouped[:3]
+            n_runs = 1
+
         # Definimos una función interna para procesar UN SOLO GRUPO de forma aislada
         def _process_single_group(keys, group_df):
             key_dict = dict(zip(group_cols, keys if isinstance(keys, tuple) else (keys,)))
             try:
-                sim = cls.from_group(group_df, unit_params_dict, R=R, eta=eta, minimize=minimize)
+                sim = cls.from_group(group_df, unit_params_dict, unit_times_dict, R=R, eta=eta, minimize=minimize)
                 mc_results = sim.run_montecarlo(n_runs=n_runs, n_trials=n_trials, seed=seed)
                 mc_results = sim.enrich_results(mc_results)
 
@@ -160,9 +176,11 @@ class BOHBSimulator:
         col_order = group_cols + [
             "run", "best_unit", "best_val_loss",
             "rank", "rank_pct", "epochs_used",
-            "epochs_saved", "val_score"
+            "epochs_saved", "val_score", "filter_val_loss",
+            "saved_time", "total_time"
         ]
         result = pd.concat(records, ignore_index=True)
+        result['experiment'] = result.dataset + "_" + result.task + "_" + result.net
         return result[[c for c in col_order if c in result.columns]]
 
     def _unit_final_score(self, uid) -> float:
@@ -175,10 +193,8 @@ class BOHBSimulator:
 
     def enrich_results(self, mc_df):
         n_units = len(self.all_units)
-        rankings = self.unit_rankings()
         mc_df = mc_df.copy()
-        mc_df["rank"] = mc_df["best_unit"].map(rankings)
-        mc_df["rank_pct"] = (mc_df["rank"] - 1) / max(n_units - 1, 1)
+        mc_df["rank_pct"] = mc_df["rank"] / 100
         mc_df["epochs_saved"] = mc_df["baseline_epochs"] - mc_df["epochs_used"]
         return mc_df
 
@@ -219,8 +235,10 @@ class BOHBSimulator:
         study = optuna.create_study(direction=direction, sampler=sampler, pruner=pruner)
 
         epochs_used = 0
+        time_used = 0
+        total_time = 0
         baseline_epochs = 0
-        real_best_score = np.inf
+        real_best_loss = np.inf
         sampled_units_all = list()
         # ══════ OPTIMIZACIÓN DE RUNGS ══════
         # Pre-calcular las épocas exactas donde Hyperband toma decisiones: 1, eta, eta^2, eta^3...
@@ -231,7 +249,7 @@ class BOHBSimulator:
             curr_rung *= self.eta
 
         def objective(trial):
-            nonlocal epochs_used, baseline_epochs, real_best_score
+            nonlocal epochs_used, baseline_epochs, real_best_loss, time_used, total_time
 
             suggested = {}
             for k, v in self.params_ranges.items():
@@ -243,6 +261,8 @@ class BOHBSimulator:
             uid = self._find_closest_unit(suggested)
             sampled_units_all.append(uid)
             curve = self.val_curves[uid]
+            unit_time = self.unit_times[uid]
+            total_time += unit_time * len(curve)
 
             baseline_epochs += len(curve)
 
@@ -254,6 +274,7 @@ class BOHBSimulator:
                 val_loss = curve[epoch_idx]
                 last_val_loss = val_loss
                 epochs_used += 1
+                time_used += unit_time
 
                 # Reportamos la métrica a Optuna obligatoriamente
                 trial.report(val_loss, step)
@@ -264,8 +285,8 @@ class BOHBSimulator:
                     if trial.should_prune():
                         raise optuna.TrialPruned()
 
-            if real_best_score > curve[-1]:
-                real_best_score = curve[-1]
+            if real_best_loss > curve[-1]:
+                real_best_loss = curve[-1]
 
             return last_val_loss
 
@@ -281,35 +302,42 @@ class BOHBSimulator:
 
         # Recuperamos el unit_id real de los parámetros del mejor trial
         best_uid = self._find_closest_unit(best_trial.params)
-        best_score = best_trial.value
+        best_loss = best_trial.value
 
         baseline_epochs = sum(len(self.val_curves[u]) for u in sampled_units_all)
 
         rank = sorted([np.array(self.val_curves[u]).min() for u in sampled_units_all])
-        rank = [r >= best_score for r in rank].index(True)
-        print(f"Best uid {best_uid}, Best score: {best_score}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
+        rank = [r >= best_loss for r in rank].index(True)
+        print(f"Best uid {best_uid}, Best loss: {best_loss}, Epochs saved: {(baseline_epochs - epochs_used) / baseline_epochs:0.2f}, rank: {rank}")
 
-        performance_score = real_best_score / best_score  # lower is better
+        performance_score = real_best_loss / best_loss  # lower is better
 
         total_epochs = baseline_epochs + epochs_used
         time_score = (epochs_used / total_epochs)          # lower is better
 
+        #score = (0.5 * performance_score + 0.5 * time_score)
+        score = np.sqrt(performance_score * time_score)
 
-        score = (0.5 * performance_score + 0.5 * time_score)
+        saved_time = total_time - time_used
 
-        return best_uid, best_score, epochs_used, baseline_epochs, score
+        return best_uid, best_loss, real_best_loss, epochs_used, baseline_epochs, score, rank, total_time, saved_time
 
-    def run_montecarlo(self, n_runs=20, n_trials=50, seed=42):
+    def run_montecarlo(self, n_runs=20, n_trials=100, seed=42):
         results = []
         for i in range(n_runs):
-            uid, val_loss, ep, baseline, val_score = self.run_once(n_trials=n_trials, seed=seed + i)
+            uid, val_loss, best_loss, ep, baseline, val_score, rank, total_time, saved_time =\
+                self.run_once(n_trials=n_trials, seed=seed + i)
             results.append({
                 "run": i,
                 "best_unit": uid,
-                "best_val_loss": val_loss,
+                "filter_val_loss": val_loss,
+                "best_val_loss": best_loss,
                 "epochs_used": ep,
                 "baseline_epochs": baseline,
                 "val_score": val_score,
+                "rank": rank,
+                "total_time": total_time,
+                "saved_time": saved_time
             })
         return pd.DataFrame(results)
 
@@ -317,6 +345,8 @@ class BOHBSimulator:
 def bohb_simulation(config, ifold, queue, debug, directory, timeout):
 
     try:
+
+
         training_config = config['train']
         data_config     = config['data']
 
@@ -329,7 +359,7 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
         csv_config['train__fold']       = ifold
         nhash     = confighash(csv_config, exclude=HASH_EXCLUDE)
         arch_hash = confighash(csv_config, exclude=HASH_EXCLUDE + ["train__fold"])
-        csv_config['run_hash']  = nhash
+        csv_config['run_hash'] = nhash
         csv_config['arch_hash'] = arch_hash
 
         if not os.path.exists(directory):
@@ -368,12 +398,12 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
 
         # 1. Identificas las columnas que representan tus hiperparámetros (ej: lr, batch_size, dropout...)
         # Si tus columnas de hiperparámetros no tienen prefijo, puedes listarlas explícitamente:
-        unit_params_dict = create_unit_params_dict(fold_train.unit, hp_set)
+        unit_params_dict, unit_times = create_unit_params_dict(fold_train.unit, hp_set)
 
         group_cols  = ["dataset", "task", "net"]
         eta_grid    = training_config.get('hyperband_eta_grid', [2, 3])
-        n_runs      = training_config.get('hyperband_n_runs',   30)
-        hb_seed     = training_config.get('hyperband_seed',     42)
+        n_runs      = training_config.get('hyperband_n_runs',   20)
+        hb_seed     = training_config.get('hyperband_seed',     random_state)
 
         # ── paso 1: CV sobre train para seleccionar (R, eta) ─────────────────
         logging.info("Hyperband CV: optimizing R and eta")
@@ -385,13 +415,15 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
             results = BOHBSimulator.run_all_groups(
                 fold_train,
                 unit_params_dict=unit_params_dict,
+                unit_times_dict=unit_times,
                 group_cols=group_cols,
                 R=R, eta=eta,
                 n_runs=n_runs,
                 seed=hb_seed,
+                debug=debug,
             )
             mean_rp = results["val_score"].mean()
-            if best is None or mean_rp < best["rank_pct"]:
+            if best is None or mean_rp > best["rank_pct"]:
                 best = {"R": R, "eta": eta, "rank_pct": mean_rp}
 
                 print(best)
@@ -404,39 +436,56 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
         # ── paso 2: Hyperband sobre train completo con los mejores params ─────
         logging.info("Hyperband: running on full train set")
 
-        unit_params_dict = create_unit_params_dict(train_df.unit, hp_set)
+        unit_params_dict, unit_times = create_unit_params_dict(train_df.unit, hp_set)
         train_results = BOHBSimulator.run_all_groups(
             train_df,
             unit_params_dict=unit_params_dict,
+            unit_times_dict=unit_times,
             group_cols=group_cols,
             R=best_R, eta=best_eta, n_runs=n_runs, seed=hb_seed,
+            debug=debug,
+
         )
 
         # ── paso 3: evaluación del ganador en test ────────────────────────────
         logging.info("Hyperband: running on test set with best params")
 
-        unit_params_dict = create_unit_params_dict(test_df.unit, hp_set)
+        unit_params_dict, unit_times = create_unit_params_dict(test_df.unit, hp_set)
         test_results = BOHBSimulator.run_all_groups(
             test_df,
             unit_params_dict=unit_params_dict,
+            unit_times_dict=unit_times,
             group_cols=group_cols,
             R=best_R, eta=best_eta, n_runs=n_runs, seed=hb_seed,
+            debug=debug,
         )
 
         # ── métricas globales y persistencia ─────────────────────────────────────
 
-        mean_test_saved_pct = (test_results["epochs_saved"] / (
-                    test_results["epochs_saved"] + test_results["epochs_used"])).mean()
-        mean_test_val_loss = test_results["best_val_loss"].mean()
-        mean_test_rank_pct = test_results["rank_pct"].mean()
-        mean_test_val_score = test_results["val_score"].mean()
-
-        test_mean_rank = test_results['rank'].mean()
         mean_train_saved_pct = (train_results["epochs_saved"] / (train_results["epochs_saved"] + train_results["epochs_used"])).mean()
         mean_train_rank_pct = train_results["rank_pct"].mean()
         mean_train_val_score = train_results["val_score"].mean()
-        mean_epochs_saved = train_results["epochs_saved"].mean()
         train_mean_rank = train_results['rank'].mean()
+
+        mean_test_saved_pct = (test_results["epochs_saved"] / (
+                    test_results["epochs_saved"] + test_results["epochs_used"])).mean()
+        mean_test_val_loss = test_results["filter_val_loss"].mean()
+        mean_test_rank_pct = test_results["rank_pct"].mean()
+        mean_test_val_score = test_results["val_score"].mean()
+        filter_best_losses = list(test_results['filter_val_loss'].values)
+        real_best_losses = list(test_results['best_val_loss'].values)
+        train_total_time = test_results["total_time"].mean()
+        test_saved_time = test_results["saved_time"].mean()
+
+        rank_losses = list(test_results['rank'].values)
+        test_results['experiment'] = test_results.dataset + "_" + test_results.task + "_" + test_results.net
+        experiments = list(test_results.experiment.values)
+        mean_epochs_saved = test_results["epochs_saved"].mean()
+        mean_epochs_used = test_results["epochs_used"].mean()
+        test_mean_rank = test_results['rank'].mean()
+        total_time = test_results["total_time"].mean()
+        saved_time = test_results["saved_time"].mean()
+        saved_pct_per_exp = [s / t for s, t in zip(test_results["saved_time"], test_results["total_time"])]
 
         prefix = os.path.join(directory, nhash)
         train_results.to_csv(f"{prefix}_train.csv", index=False)
@@ -450,13 +499,23 @@ def bohb_simulation(config, ifold, queue, debug, directory, timeout):
             "test_rank_pct": mean_test_rank_pct,
             "train_rank_pct": mean_train_rank_pct,
             "epochs_saved": mean_epochs_saved,
+            "epochs_used": mean_epochs_used,
             "test_epochs_saved_pct": mean_test_saved_pct,
             "train_epochs_saved_pct": mean_train_saved_pct,
             "mean_test_val_score": mean_test_val_score,
             "mean_train_val_score": mean_train_val_score,
             "test_mean_rank": test_mean_rank,
             "train_mean_rank": train_mean_rank,
-            "random_state": random_state
+            "random_state": random_state,
+            "rank_losses": rank_losses,
+            "experiments": experiments,
+            "filter_best_losses": filter_best_losses,
+            "real_best_losses": real_best_losses,
+            "total_time": total_time,
+            "saved_time": saved_time,
+            "train_total_time": train_total_time,
+            "test_saved_time": test_saved_time,
+            "saved_pct_per_exp": saved_pct_per_exp,
 
         })
         log_train(csv_config, directory)
@@ -488,4 +547,6 @@ def create_unit_params_dict(units, X):
                             hp not in ['model__input_shape', 'model__output', 'model__net', 'model__output_dim']}
                         for u, hps in unit_params_dict.items()}
 
-    return unit_params_dict
+    unit_times = {u: d['train__time'] for u, d in X.groupby('unit')[['train__time']].first().to_dict('index').items()}
+
+    return unit_params_dict, unit_times

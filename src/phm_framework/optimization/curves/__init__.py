@@ -65,7 +65,7 @@ def load_curves(fold: int, num_folds: int = 5, normalize_output=False, filters=N
     if 'train_loss' in X.columns:
         X.loc[X.train_loss > 8, 'train_loss'] = 8.0
         X['max_train_loss'] = X.groupby(['unit', 'dataset', 'task', 'net'])['val_loss'].transform('max')
-        X['train_loss'] =  X['train_loss'] / X['max_train_loss']
+        X['train_loss'] = X['train_loss'] / X['max_train_loss']
         X.loc[X.train_loss > 1, 'train_loss'] = 1.0
         X['val_loss'] = X['val_loss'] / X['max_train_loss']
         del X['max_train_loss']

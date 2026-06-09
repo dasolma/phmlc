@@ -96,7 +96,6 @@ def train_loop(lr):
         embedding_dims = [8, 16]
         block_sizes = [1, 2, 3]
 
-        processes = []
         for nblocks, embedding_dim, block_size, random_state in \
                 itertools.product(nblocks, embedding_dims, block_sizes, random_states):
                 ts_len_range = [21] if args.model == 'fsldt' else range(5, 21, 5)
@@ -275,14 +274,8 @@ def train_loop(lr):
                 else:
                     p = multiprocessing.Process(target=train, args=(config,))
                     p.start()
-                    processes.append(p)
-                    time.sleep(5)
+                    p.join()
 
-
-                #train(config)
-        if not args.debug:
-            for p in processes:
-                p.join()
 
 
 
